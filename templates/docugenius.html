@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>DocuGenius AI - Student Sarthi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0a0f;--paper:#f5f3ee;--warm:#ede9e0;
+  --card:#fff;--border:#d6d0c4;--accent:#1a56db;
+  --accent2:#3b82f6;--text:#1c1917;--muted:#78716c;
+  --light:#a8a29e;--green:#059669;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:0 4px 6px rgba(0,0,0,.07),0 12px 40px rgba(0,0,0,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;opacity:.6;}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(245,243,238,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--ink);display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo span{color:var(--accent)}
+.nav-badge{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:3px 8px;border-radius:3px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.btn-back{padding:7px 16px;background:transparent;border:1.5px solid var(--border);border-radius:6px;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:var(--muted);transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px;}
+.btn-back:hover{border-color:var(--ink);color:var(--ink);}
+.nav-user{font-size:.82rem;color:var(--muted);font-family:'DM Mono',monospace;}
+.nav-user strong{color:var(--text);}
+
+.main{max-width:1000px;margin:0 auto;padding:48px 32px 80px;}
+
+/* HEADER */
+.page-header{margin-bottom:40px;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:20px;height:2px;background:var(--accent);}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;color:var(--ink);margin-bottom:10px;}
+h1 em{font-style:normal;color:var(--accent);}
+.page-sub{font-size:.95rem;color:var(--muted);font-weight:300;}
+
+/* INPUT PANEL */
+.input-panel{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:28px;margin-bottom:24px;box-shadow:var(--shadow);}
+.panel-label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.panel-label::after{content:'';flex:1;height:1px;background:var(--border);}
+textarea{width:100%;min-height:200px;padding:16px;resize:vertical;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--text);background:var(--warm);border:2px solid var(--border);border-radius:8px;outline:none;transition:border-color .2s;line-height:1.7;}
+textarea:focus{border-color:var(--accent);}
+textarea::placeholder{color:var(--light);}
+.input-hint{font-size:.78rem;color:var(--muted);margin-top:10px;font-family:'DM Mono',monospace;letter-spacing:.02em;}
+
+.btn-analyze{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .22s;background:var(--accent);color:#fff;width:100%;justify-content:center;margin-top:16px;}
+.btn-analyze:hover:not(:disabled){background:#1246b3;transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,86,219,.3);}
+.btn-analyze:disabled{opacity:.45;cursor:not-allowed;}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.btn-analyze.loading .btn-text{display:none;}
+.btn-analyze.loading .spinner{display:block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* WORD COUNT */
+.wc{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:8px;display:flex;gap:16px;}
+.wc span{color:var(--accent);}
+
+/* ERROR */
+.error-box{background:#fff5f0;border:1.5px solid #ffd0b5;border-radius:10px;padding:16px 20px;color:#c2410c;font-size:.88rem;display:none;margin-bottom:20px;align-items:center;gap:10px;}
+.error-box.show{display:flex;}
+
+/* RESULTS */
+.results{display:none;}
+.results.show{display:block;}
+
+/* INSIGHTS BAR */
+.insights-bar{
+  display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;
+}
+.insight-chip{
+  flex:1;min-width:120px;
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:10px;padding:14px 18px;
+  box-shadow:var(--shadow);
+}
+.insight-chip .ic-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.insight-chip .ic-value{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--ink);}
+.insight-chip.diff-easy .ic-value{color:var(--green);}
+.insight-chip.diff-medium .ic-value{color:#d97706;}
+.insight-chip.diff-hard .ic-value{color:#dc2626;}
+
+/* TABS */
+.tabs{display:flex;gap:0;background:var(--warm);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px;overflow-x:auto;}
+.tab{flex:1;min-width:fit-content;padding:9px 16px;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:none;color:var(--muted);cursor:pointer;border-radius:7px;transition:all .2s;white-space:nowrap;}
+.tab.active{background:var(--ink);color:var(--paper);font-weight:500;}
+
+/* TAB CONTENT */
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+.result-panel{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:28px;box-shadow:var(--shadow);}
+
+.short-summary{
+  background:linear-gradient(135deg,#eff6ff,#e0f2fe);
+  border:1px solid #bfdbfe;
+  border-radius:10px;padding:20px 24px;
+  font-size:.95rem;line-height:1.7;color:var(--text);
+  margin-bottom:20px;
+}
+
+.detailed-summary{line-height:1.8;font-size:.92rem;color:var(--text);}
+.detailed-summary p{margin-bottom:12px;}
+.detailed-summary ul,.detailed-summary ol{padding-left:20px;margin-bottom:12px;}
+.detailed-summary li{margin-bottom:6px;}
+.detailed-summary strong{color:var(--ink);}
+
+.key-points-list,.concepts-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.key-points-list li,.concepts-list li{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--warm);border-radius:8px;font-size:.9rem;line-height:1.5;}
+.kp-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
+
+.mcq-list{display:flex;flex-direction:column;gap:20px;}
+.mcq-item{background:var(--warm);border-radius:10px;padding:20px;}
+.mcq-q{font-weight:600;font-size:.95rem;margin-bottom:12px;color:var(--ink);}
+.mcq-options{display:flex;flex-direction:column;gap:8px;}
+.mcq-opt{
+  padding:10px 14px;border-radius:7px;font-size:.88rem;
+  cursor:pointer;transition:all .2s;
+  border:1.5px solid var(--border);background:var(--card);
+}
+.mcq-opt:hover{border-color:var(--accent);background:#eff6ff;}
+.mcq-opt.correct{background:#f0fdf4;border-color:#86efac;color:var(--green);}
+.mcq-opt.wrong{background:#fff5f5;border-color:#fca5a5;color:#dc2626;}
+.mcq-opt.reveal-correct{background:#f0fdf4;border-color:#86efac;}
+
+.q-section{margin-bottom:24px;}
+.q-section h4{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.q-list-items{display:flex;flex-direction:column;gap:8px;}
+.q-item-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 16px;background:var(--warm);
+  border-radius:8px;font-size:.9rem;line-height:1.5;
+}
+.q-num{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--accent);flex-shrink:0;padding-top:1px;}
+
+.answers-list{display:flex;flex-direction:column;gap:16px;}
+.answer-item{background:var(--warm);border-radius:10px;padding:18px;}
+.answer-q{font-weight:600;font-size:.9rem;color:var(--ink);margin-bottom:8px;}
+.answer-a{font-size:.88rem;color:var(--text);line-height:1.6;}
+
+.focus-areas{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.focus-pill{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:20px;background:var(--warm);border:1px solid var(--border);color:var(--muted);}
+
+@media(max-width:700px){
+  nav{padding:0 16px;}
+  .main{padding:24px 16px 60px;}
+  .insights-bar{gap:10px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/dashboard" class="nav-logo">Student<span>Sarthi</span><div class="nav-badge">AI</div></a>
+  <div class="nav-right">
+    <span class="nav-user">Hi, <strong>{{ user.name.split()[0] }}</strong></span>
+    <button onclick="openMenti()" style="padding:5px 10px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;border-radius:6px;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:#fff;cursor:pointer;white-space:nowrap;">💜 Menti AI</button>
+    <button onclick="openNexus()" style="padding:5px 10px;background:linear-gradient(135deg,#0891b2,#06b6d4);border:none;border-radius:6px;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:#000;cursor:pointer;white-space:nowrap;">🤖 Nexus</button>
+    <a href="/dashboard" class="btn-back">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="main">
+
+  <div class="page-header">
+    <div class="eyebrow">DocuGenius AI</div>
+    <h1>Analyze Any <em>Document</em></h1>
+    <p class="page-sub">Paste your text — get summaries, key points, MCQs, questions &amp; deep insights powered by Gemini</p>
+  </div>
+
+  <div class="input-panel">
+    <div class="panel-label">Your Document</div>
+    <textarea id="docText" placeholder="Paste your text here — lecture notes, research papers, articles, book chapters, any content you want to analyze...&#10;&#10;Minimum 50 characters. Works best with 200–5000 words." oninput="updateWC()"></textarea>
+    <div class="wc"><div>Words: <span id="wcWords">0</span></div><div>Characters: <span id="wcChars">0</span></div></div>
+    <p class="input-hint">📌 Tip: The more detailed your text, the richer the analysis. Great for exam prep, research, or quick understanding.</p>
+    <button class="btn-analyze" id="analyzeBtn" onclick="analyze()">
+      <span class="btn-text">✨ Analyze Document with Gemini</span>
+      <div class="spinner"></div>
+    </button>
+  </div>
+
+  <div class="error-box" id="errorBox">
+    <span>⚠</span><span id="errorMsg"></span>
+  </div>
+
+  <div class="results" id="results">
+
+    <!-- Insights Bar -->
+    <div class="insights-bar" id="insightsBar"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('summary',this)">📋 Summary</button>
+      <button class="tab" onclick="switchTab('keypoints',this)">✅ Key Points</button>
+      <button class="tab" onclick="switchTab('mcq',this)">🧩 MCQ Quiz</button>
+      <button class="tab" onclick="switchTab('questions',this)">❓ Questions</button>
+      <button class="tab" onclick="switchTab('answers',this)">💡 Answers</button>
+    </div>
+
+    <!-- Summary Tab -->
+    <div class="tab-content active" id="tab-summary">
+      <div class="result-panel">
+        <div class="panel-label">Summary</div>
+        <div class="short-summary" id="shortSummary"></div>
+        <div class="detailed-summary" id="detailedSummary"></div>
+      </div>
+    </div>
+
+    <!-- Key Points Tab -->
+    <div class="tab-content" id="tab-keypoints">
+      <div class="result-panel">
+        <div class="panel-label">Key Points &amp; Concepts</div>
+        <ul class="key-points-list" id="keyPointsList"></ul>
+        <br/>
+        <div class="panel-label">Important Concepts</div>
+        <ul class="concepts-list" id="conceptsList"></ul>
+      </div>
+    </div>
+
+    <!-- MCQ Tab -->
+    <div class="tab-content" id="tab-mcq">
+      <div class="result-panel">
+        <div class="panel-label">Multiple Choice Quiz</div>
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px;font-family:'DM Mono',monospace;">Click an option to check your answer</p>
+        <div class="mcq-list" id="mcqList"></div>
+      </div>
+    </div>
+
+    <!-- Questions Tab -->
+    <div class="tab-content" id="tab-questions">
+      <div class="result-panel">
+        <div class="panel-label">Study Questions</div>
+        <div class="q-section">
+          <h4>Short Answer Questions</h4>
+          <div class="q-list-items" id="shortQList"></div>
+        </div>
+        <div class="q-section">
+          <h4>Long Answer / Essay Questions</h4>
+          <div class="q-list-items" id="longQList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Answers Tab -->
+    <div class="tab-content" id="tab-answers">
+      <div class="result-panel">
+        <div class="panel-label">Detailed Answers</div>
+        <div class="answers-list" id="answersList"></div>
+      </div>
+    </div>
+
+  </div><!-- /results -->
+
+</div>
+
+<script>
+let analysisData = null;
+
+function updateWC() {
+  const text = document.getElementById('docText').value;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById('wcWords').textContent = words;
+  document.getElementById('wcChars').textContent = text.length;
+}
+
+function setLoading(loading) {
+  const btn = document.getElementById('analyzeBtn');
+  btn.className = 'btn-analyze' + (loading ? ' loading' : '');
+  btn.disabled = loading;
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBox');
+  document.getElementById('errorMsg').textContent = msg;
+  el.className = 'error-box show';
+}
+
+function hideError() {
+  document.getElementById('errorBox').className = 'error-box';
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.className = 'tab-content');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).className = 'tab-content active';
+  btn.classList.add('active');
+}
+
+async function analyze() {
+  const text = document.getElementById('docText').value.trim();
+  if (!text) { showError('Please paste some document text first.'); return; }
+  if (text.length < 50) { showError('Document is too short. Please paste at least 50 characters.'); return; }
+  hideError();
+  setLoading(true);
+  document.getElementById('results').className = 'results';
+
+  try {
+    const res = await fetch('/api/docugenius/analyze', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({text}),
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if (!data.success) { showError(data.error || 'Analysis failed. Please try again.'); return; }
+    analysisData = data.analysis;
+    renderResults(data.analysis);
+    document.getElementById('results').className = 'results show';
+    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+  } catch(e) {
+    showError('Connection error. Please try again.');
+  }
+  setLoading(false);
+}
+
+function renderResults(a) {
+  // Insights bar
+  const diff = a.insights?.difficulty || 'Medium';
+  const diffClass = {Easy:'diff-easy', Medium:'diff-medium', Hard:'diff-hard'}[diff] || 'diff-medium';
+  document.getElementById('insightsBar').innerHTML = `
+    <div class="insight-chip ${diffClass}">
+      <div class="ic-label">Difficulty</div>
+      <div class="ic-value">${diff}</div>
+    </div>
+    <div class="insight-chip">
+      <div class="ic-label">Reading Time</div>
+      <div class="ic-value">${a.insights?.readingTime || 'N/A'}</div>
+    </div>
+    <div class="insight-chip">
+      <div class="ic-label">Key Points</div>
+      <div class="ic-value">${(a.keyPoints||[]).length}</div>
+    </div>
+    <div class="insight-chip">
+      <div class="ic-label">MCQs</div>
+      <div class="ic-value">${(a.mcqs||[]).length}</div>
+    </div>
+    <div class="insight-chip">
+      <div class="ic-label">Focus Areas</div>
+      <div class="ic-value">${(a.insights?.focusAreas||[]).length}</div>
+    </div>
+  `;
+
+  // Summary
+  document.getElementById('shortSummary').textContent = a.shortSummary || '';
+  document.getElementById('detailedSummary').innerHTML = markdownToHtml(a.detailedSummary || '');
+
+  // Key points
+  document.getElementById('keyPointsList').innerHTML = (a.keyPoints||[]).map(p =>
+    `<li><span class="kp-icon">▸</span>${p}</li>`
+  ).join('');
+  document.getElementById('conceptsList').innerHTML = (a.importantConcepts||[]).map(c =>
+    `<li><span class="kp-icon">💡</span>${c}</li>`
+  ).join('');
+
+  // MCQs
+  document.getElementById('mcqList').innerHTML = (a.mcqs||[]).map((q,qi) => `
+    <div class="mcq-item">
+      <div class="mcq-q">Q${qi+1}. ${q.question}</div>
+      <div class="mcq-options">
+        ${(q.options||[]).map((opt,oi) => `
+          <div class="mcq-opt" onclick="checkMcq(this,'${q.correctAnswer.replace(/'/g,"\\'")}')">
+            <strong>${String.fromCharCode(65+oi)}.</strong> ${opt}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // Questions
+  document.getElementById('shortQList').innerHTML = (a.shortQuestions||[]).map((q,i) =>
+    `<div class="q-item-row"><span class="q-num">Q${i+1}</span>${q}</div>`
+  ).join('');
+  document.getElementById('longQList').innerHTML = (a.longQuestions||[]).map((q,i) =>
+    `<div class="q-item-row"><span class="q-num">Q${i+1}</span>${q}</div>`
+  ).join('');
+
+  // Answers
+  document.getElementById('answersList').innerHTML = (a.answers||[]).map(ans => `
+    <div class="answer-item">
+      <div class="answer-q">❓ ${ans.question}</div>
+      <div class="answer-a">💬 ${ans.answer}</div>
+    </div>
+  `).join('');
+}
+
+function checkMcq(optEl, correctAnswer) {
+  const container = optEl.closest('.mcq-options');
+  if (container.querySelector('.correct,.wrong')) return; // already answered
+  const optText = optEl.textContent.replace(/^[A-D]\.\s*/, '').trim();
+  container.querySelectorAll('.mcq-opt').forEach(o => {
+    const oText = o.textContent.replace(/^[A-D]\.\s*/, '').trim();
+    if (oText === correctAnswer) o.classList.add('reveal-correct');
+  });
+  if (optText === correctAnswer) {
+    optEl.classList.add('correct');
+    optEl.textContent = optEl.textContent + ' ✓';
+  } else {
+    optEl.classList.add('wrong');
+    optEl.textContent = optEl.textContent + ' ✗';
+  }
+}
+
+function markdownToHtml(md) {
+  return md
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/^## (.*$)/gm, '<h3 style="font-family:Syne,sans-serif;font-size:1.05rem;font-weight:700;margin:16px 0 8px;color:var(--ink)">$1</h3>')
+    .replace(/^# (.*$)/gm, '<h2 style="font-family:Syne,sans-serif;font-size:1.2rem;font-weight:800;margin:20px 0 10px;color:var(--ink)">$1</h2>')
+    .replace(/^- (.*$)/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)+/g, '<ul style="padding-left:20px;margin:8px 0">$&</ul>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, ' ');
+}
+</script>
+
+<!-- ── Menti AI + Nexus Overlays ── -->
+<style>
+/* ── Base Modal Overlay ── */
+.feat-overlay{
+  display:none;position:fixed;inset:0;z-index:9100;
+  background:rgba(0,0,0,.72);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;
+  padding:20px;
+}
+.feat-overlay.open{display:flex;}
+
+/* ── API Key Screen (shared) ── */
+.key-screen{
+  display:flex;flex-direction:column;align-items:center;
+  gap:16px;padding:40px 32px;text-align:center;
+}
+.key-screen h3{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;}
+.key-screen p{font-size:.85rem;opacity:.6;max-width:340px;line-height:1.6;}
+.key-input{
+  width:100%;max-width:360px;padding:12px 16px;
+  border-radius:8px;border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:inherit;
+  font-family:'DM Mono',monospace;font-size:.85rem;
+  outline:none;transition:border-color .2s;
+}
+.key-input::placeholder{opacity:.4;}
+.key-input:focus{border-color:rgba(255,255,255,.5);}
+.key-btn{
+  padding:11px 28px;border-radius:8px;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;
+  transition:opacity .2s;
+}
+.key-btn:hover{opacity:.85;}
+
+/* ════════════════════════════════
+   MENTI AI MODAL
+   ════════════════════════════════ */
+#menti-overlay .feat-modal{
+  background:linear-gradient(160deg,#1a0533 0%,#0d0d1a 50%,#180830 100%);
+  border:1px solid rgba(168,85,247,.25);
+  border-radius:28px;width:100%;max-width:480px;
+  color:#fff;overflow:hidden;
+  box-shadow:0 0 60px rgba(124,58,237,.3),0 20px 60px rgba(0,0,0,.5);
+  position:relative;
+}
+.menti-close{
+  position:absolute;top:18px;right:18px;
+  background:rgba(255,255,255,.08);border:none;color:#fff;
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  font-size:1rem;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;z-index:2;
+}
+.menti-close:hover{background:rgba(255,255,255,.16);}
+.menti-body{padding:40px 36px 36px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px;}
+.menti-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:-.02em;}
+.menti-title em{font-style:normal;background:linear-gradient(90deg,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.menti-sub{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+
+/* Orb */
+.menti-orb-wrap{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center;}
+.menti-orb{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;transition:all .5s;}
+.menti-orb.active{background:radial-gradient(circle,rgba(168,85,247,.25),rgba(124,58,237,.1));}
+.menti-orb-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(168,85,247,.2);}
+.menti-orb-ring.r2{inset:10px;animation:menti-pulse 2.5s ease-in-out infinite;}
+.menti-orb-ring.r3{inset:20px;animation:menti-pulse 2.5s ease-in-out 1s infinite;}
+.menti-orb-icon{font-size:2.4rem;}
+@keyframes menti-pulse{0%,100%{opacity:.2;transform:scale(1);}50%{opacity:.6;transform:scale(1.04);}}
+
+/* Transcript */
+.menti-transcript{
+  min-height:52px;max-height:80px;overflow-y:auto;
+  font-family:'Syne',sans-serif;font-style:italic;
+  font-size:1rem;color:rgba(255,255,255,.75);
+  line-height:1.6;padding:0 8px;
+}
+.menti-transcript:empty::before{content:"Tap below to start a conversation";color:rgba(255,255,255,.3);}
+
+/* Mic Button */
+.menti-mic-btn{
+  width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+  transition:all .4s;box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+.menti-mic-btn.idle{background:#fff;color:#000;}
+.menti-mic-btn.idle:hover{transform:scale(1.06);}
+.menti-mic-btn.active{background:rgba(239,68,68,.2);color:#f87171;border:1.5px solid rgba(239,68,68,.4);}
+.menti-mic-btn.connecting{opacity:.5;cursor:not-allowed;}
+.menti-status{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;}
+
+/* Menti footer */
+.menti-footer{display:flex;gap:28px;padding:0 0 8px;justify-content:center;}
+.menti-footer span{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.2);display:flex;align-items:center;gap:5px;}
+
+/* Menti key screen colours */
+#menti-overlay .key-screen h3{color:#c084fc;}
+#menti-overlay .key-btn{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;}
+
+/* ════════════════════════════════
+   NEXUS MODAL
+   ════════════════════════════════ */
+#nexus-overlay .feat-modal{
+  background:#0a0a0f;
+  border:1px solid rgba(6,182,212,.2);
+  border-radius:16px;width:100%;max-width:700px;
+  color:#e5e7eb;overflow:hidden;
+  box-shadow:0 0 80px rgba(6,182,212,.15),0 20px 60px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;height:min(620px,90vh);
+}
+/* Nexus header */
+.nexus-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);
+  background:#0a0a0f;flex-shrink:0;
+}
+.nexus-header-left{display:flex;align-items:center;gap:10px;}
+.nexus-dot{width:10px;height:10px;border-radius:50%;background:#3f3f46;transition:all .3s;}
+.nexus-dot.online{background:#22d3ee;box-shadow:0 0 8px #22d3ee;}
+.nexus-title{font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:#22d3ee;}
+.nexus-header-right{display:flex;align-items:center;gap:10px;}
+.nexus-audio-btn{
+  padding:6px;background:transparent;border:none;color:#9ca3af;
+  cursor:pointer;border-radius:6px;transition:background .2s;font-size:1rem;
+}
+.nexus-audio-btn:hover{background:rgba(255,255,255,.08);}
+.nexus-init-btn{
+  padding:6px 14px;background:#22d3ee;color:#000;border:none;
+  font-family:'DM Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;border-radius:6px;cursor:pointer;
+  transition:all .2s;
+}
+.nexus-init-btn:hover{background:#06b6d4;}
+.nexus-term-btn{
+  padding:6px 14px;background:rgba(239,68,68,.15);color:#f87171;
+  border:1px solid rgba(239,68,68,.4);
+  font-family:'DM Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;border-radius:6px;cursor:pointer;
+  transition:all .2s;
+}
+.nexus-term-btn:hover{background:rgba(239,68,68,.25);}
+.nexus-close{
+  background:rgba(255,255,255,.06);border:none;color:#9ca3af;
+  width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.nexus-close:hover{background:rgba(255,255,255,.12);}
+
+/* Nexus transcript */
+.nexus-transcript{
+  flex:1;overflow-y:auto;padding:24px 20px;
+  display:flex;flex-direction:column;gap:18px;
+  background:radial-gradient(circle at 50% 30%,rgba(6,182,212,.04),transparent 65%);
+}
+.nexus-transcript::-webkit-scrollbar{width:4px;}
+.nexus-transcript::-webkit-scrollbar-track{background:transparent;}
+.nexus-transcript::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.nexus-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:12px;opacity:.3;text-align:center;
+}
+.nexus-empty-icon{font-size:2.4rem;animation:nexus-pulse 2.5s ease-in-out infinite;}
+@keyframes nexus-pulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+.nexus-empty p{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;}
+
+.nexus-msg{display:flex;justify-content:flex-start;animation:msg-in .3s ease;}
+.nexus-msg.user{justify-content:flex-end;}
+@keyframes msg-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.nexus-msg-inner{display:flex;align-items:flex-start;gap:10px;max-width:80%;}
+.nexus-msg.user .nexus-msg-inner{flex-direction:row-reverse;gap:10px;}
+.nexus-msg-avatar{
+  width:28px;height:28px;border-radius:6px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:.75rem;
+}
+.nexus-msg-avatar.ai-av{background:rgba(6,182,212,.12);color:#22d3ee;}
+.nexus-msg-avatar.user-av{background:rgba(6,182,212,.08);color:#67e8f9;}
+.nexus-msg-bubble{
+  padding:12px 16px;border-radius:14px;font-size:.85rem;line-height:1.6;
+}
+.nexus-msg.ai .nexus-msg-bubble{background:rgba(255,255,255,.05);color:#d4d4d8;border-radius:4px 14px 14px 14px;}
+.nexus-msg.user .nexus-msg-bubble{background:rgba(6,182,212,.15);color:#cffafe;border-radius:14px 4px 14px 14px;}
+
+/* Nexus footer controls */
+.nexus-controls{
+  padding:16px 20px;border-top:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:space-between;
+  background:#0a0a0f;flex-shrink:0;
+}
+.nexus-status-wrap{display:flex;flex-direction:column;}
+.nexus-status-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#52525b;}
+.nexus-status-val{font-family:'DM Mono',monospace;font-size:.72rem;color:rgba(34,211,238,.7);margin-top:2px;}
+.nexus-rec-btn{
+  width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+  transition:all .3s;
+}
+.nexus-rec-btn.idle-c{background:#22d3ee;color:#000;}
+.nexus-rec-btn.idle-c:hover{background:#06b6d4;}
+.nexus-rec-btn.rec{background:#ef4444;color:#fff;box-shadow:0 0 20px rgba(239,68,68,.5);}
+.nexus-rec-btn.disabled{background:#27272a;color:#52525b;cursor:not-allowed;}
+.nexus-bars{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.nexus-bars-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#52525b;}
+.nexus-bar-dots{display:flex;gap:3px;align-items:flex-end;height:14px;}
+.nexus-bar-dot{width:3px;border-radius:2px;background:#3f3f46;transition:height .2s;}
+.nexus-bar-dot.active{background:#22d3ee;animation:bar-bounce .6s ease-in-out infinite;}
+.nexus-bar-dot:nth-child(2){animation-delay:.1s;}
+.nexus-bar-dot:nth-child(3){animation-delay:.2s;}
+.nexus-bar-dot:nth-child(4){animation-delay:.3s;}
+@keyframes bar-bounce{0%,100%{height:4px;}50%{height:14px;}}
+
+/* Nexus key screen */
+#nexus-overlay .key-screen{background:#0a0a0f;color:#e5e7eb;}
+#nexus-overlay .key-screen h3{color:#22d3ee;}
+#nexus-overlay .key-input{color:#e5e7eb;}
+#nexus-overlay .key-btn{background:linear-gradient(135deg,#0891b2,#22d3ee);color:#000;}
+#nexus-overlay .key-screen p{color:rgba(255,255,255,.5);}
+
+/* Nexus footer text */
+.nexus-foot{
+  padding:8px 20px 14px;
+  display:flex;justify-content:space-between;
+  font-family:'DM Mono',monospace;font-size:.6rem;
+  color:#3f3f46;letter-spacing:.16em;text-transform:uppercase;
+  flex-shrink:0;
+}
+
+/* ── API Key Screen (shared) ── */
+.key-screen{
+  display:flex;flex-direction:column;align-items:center;
+  gap:16px;padding:40px 32px;text-align:center;
+}
+.key-screen h3{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;}
+.key-screen p{font-size:.85rem;opacity:.6;max-width:340px;line-height:1.6;}
+.key-input{
+  width:100%;max-width:360px;padding:12px 16px;
+  border-radius:8px;border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:inherit;
+  font-family:'DM Mono',monospace;font-size:.85rem;
+  outline:none;transition:border-color .2s;
+}
+.key-input::placeholder{opacity:.4;}
+.key-input:focus{border-color:rgba(255,255,255,.5);}
+.key-btn{
+  padding:11px 28px;border-radius:8px;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;
+  transition:opacity .2s;
+}
+.key-btn:hover{opacity:.85;}
+
+/* ════════════════════════════════
+   MENTI AI MODAL
+   ════════════════════════════════ */
+#menti-overlay .feat-modal{
+  background:linear-gradient(160deg,#1a0533 0%,#0d0d1a 50%,#180830 100%);
+  border:1px solid rgba(168,85,247,.25);
+  border-radius:28px;width:100%;max-width:480px;
+  color:#fff;overflow:hidden;
+  box-shadow:0 0 60px rgba(124,58,237,.3),0 20px 60px rgba(0,0,0,.5);
+  position:relative;
+}
+.menti-close{
+  position:absolute;top:18px;right:18px;
+  background:rgba(255,255,255,.08);border:none;color:#fff;
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  font-size:1rem;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;z-index:2;
+}
+.menti-close:hover{background:rgba(255,255,255,.16);}
+.menti-body{padding:40px 36px 36px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px;}
+.menti-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:-.02em;}
+.menti-title em{font-style:normal;background:linear-gradient(90deg,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.menti-sub{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+
+/* Orb */
+.menti-orb-wrap{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center;}
+.menti-orb{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;transition:all .5s;}
+.menti-orb.active{background:radial-gradient(circle,rgba(168,85,247,.25),rgba(124,58,237,.1));}
+.menti-orb-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(168,85,247,.2);}
+.menti-orb-ring.r2{inset:10px;animation:menti-pulse 2.5s ease-in-out infinite;}
+.menti-orb-ring.r3{inset:20px;animation:menti-pulse 2.5s ease-in-out 1s infinite;}
+.menti-orb-icon{font-size:2.4rem;}
+@keyframes menti-pulse{0%,100%{opacity:.2;transform:scale(1);}50%{opacity:.6;transform:scale(1.04);}}
+
+/* Transcript */
+.menti-transcript{
+  min-height:52px;max-height:80px;overflow-y:auto;
+  font-family:'Syne',sans-serif;font-style:italic;
+  font-size:1rem;color:rgba(255,255,255,.75);
+  line-height:1.6;padding:0 8px;
+}
+.menti-transcript:empty::before{content:"Tap below to start a conversation";color:rgba(255,255,255,.3);}
+
+/* Mic Button */
+.menti-mic-btn{
+  width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+  transition:all .4s;box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+.menti-mic-btn.idle{background:#fff;color:#000;}
+.menti-mic-btn.idle:hover{transform:scale(1.06);}
+.menti-mic-btn.active{background:rgba(239,68,68,.2);color:#f87171;border:1.5px solid rgba(239,68,68,.4);}
+.menti-mic-btn.connecting{opacity:.5;cursor:not-allowed;}
+.menti-status{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;}
+
+/* Menti footer */
+.menti-footer{display:flex;gap:28px;padding:0 0 8px;justify-content:center;}
+.menti-footer span{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.2);display:flex;align-items:center;gap:5px;}
+
+/* Menti key screen colours */
+#menti-overlay .key-screen h3{color:#c084fc;}
+#menti-overlay .key-btn{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;}
+
+/* ════════════════════════════════
+   NEXUS MODAL
+   ════════════════════════════════ */
+#nexus-overlay .feat-modal{
+  background:#0a0a0f;
+  border:1px solid rgba(6,182,212,.2);
+  border-radius:16px;width:100%;max-width:700px;
+  color:#e5e7eb;overflow:hidden;
+  box-shadow:0 0 80px rgba(6,182,212,.15),0 20px 60px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;height:min(620px,90vh);
+}
+/* Nexus header */
+.nexus-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);
+  background:#0a0a0f;flex-shrink:0;
+}
+.nexus-header-left{display:flex;align-items:center;gap:10px;}
+.nexus-dot{width:10px;height:10px;border-radius:50%;background:#3f3f46;transition:all .3s;}
+.nexus-dot.online{background:#22d3ee;box-shadow:0 0 8px #22d3ee;}
+.nexus-title{font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:#22d3ee;}
+.nexus-header-right{display:flex;align-items:center;gap:10px;}
+.nexus-audio-btn{
+  padding:6px;background:transparent;border:none;color:#9ca3af;
+  cursor:pointer;border-radius:6px;transition:background .2s;font-size:1rem;
+}
+.nexus-audio-btn:hover{background:rgba(255,255,255,.08);}
+.nexus-init-btn{
+  padding:6px 14px;background:#22d3ee;color:#000;border:none;
+  font-family:'DM Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;border-radius:6px;cursor:pointer;
+  transition:all .2s;
+}
+.nexus-init-btn:hover{background:#06b6d4;}
+.nexus-term-btn{
+  padding:6px 14px;background:rgba(239,68,68,.15);color:#f87171;
+  border:1px solid rgba(239,68,68,.4);
+  font-family:'DM Mono',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;border-radius:6px;cursor:pointer;
+  transition:all .2s;
+}
+.nexus-term-btn:hover{background:rgba(239,68,68,.25);}
+.nexus-close{
+  background:rgba(255,255,255,.06);border:none;color:#9ca3af;
+  width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.nexus-close:hover{background:rgba(255,255,255,.12);}
+
+/* Nexus transcript */
+.nexus-transcript{
+  flex:1;overflow-y:auto;padding:24px 20px;
+  display:flex;flex-direction:column;gap:18px;
+  background:radial-gradient(circle at 50% 30%,rgba(6,182,212,.04),transparent 65%);
+}
+.nexus-transcript::-webkit-scrollbar{width:4px;}
+.nexus-transcript::-webkit-scrollbar-track{background:transparent;}
+.nexus-transcript::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.nexus-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:12px;opacity:.3;text-align:center;
+}
+.nexus-empty-icon{font-size:2.4rem;animation:nexus-pulse 2.5s ease-in-out infinite;}
+@keyframes nexus-pulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+.nexus-empty p{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;}
+
+.nexus-msg{display:flex;justify-content:flex-start;animation:msg-in .3s ease;}
+.nexus-msg.user{justify-content:flex-end;}
+@keyframes msg-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.nexus-msg-inner{display:flex;align-items:flex-start;gap:10px;max-width:80%;}
+.nexus-msg.user .nexus-msg-inner{flex-direction:row-reverse;gap:10px;}
+.nexus-msg-avatar{
+  width:28px;height:28px;border-radius:6px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:.75rem;
+}
+.nexus-msg-avatar.ai-av{background:rgba(6,182,212,.12);color:#22d3ee;}
+.nexus-msg-avatar.user-av{background:rgba(6,182,212,.08);color:#67e8f9;}
+.nexus-msg-bubble{
+  padding:12px 16px;border-radius:14px;font-size:.85rem;line-height:1.6;
+}
+.nexus-msg.ai .nexus-msg-bubble{background:rgba(255,255,255,.05);color:#d4d4d8;border-radius:4px 14px 14px 14px;}
+.nexus-msg.user .nexus-msg-bubble{background:rgba(6,182,212,.15);color:#cffafe;border-radius:14px 4px 14px 14px;}
+
+/* Nexus footer controls */
+.nexus-controls{
+  padding:16px 20px;border-top:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:space-between;
+  background:#0a0a0f;flex-shrink:0;
+}
+.nexus-status-wrap{display:flex;flex-direction:column;}
+.nexus-status-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#52525b;}
+.nexus-status-val{font-family:'DM Mono',monospace;font-size:.72rem;color:rgba(34,211,238,.7);margin-top:2px;}
+.nexus-rec-btn{
+  width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+  transition:all .3s;
+}
+.nexus-rec-btn.idle-c{background:#22d3ee;color:#000;}
+.nexus-rec-btn.idle-c:hover{background:#06b6d4;}
+.nexus-rec-btn.rec{background:#ef4444;color:#fff;box-shadow:0 0 20px rgba(239,68,68,.5);}
+.nexus-rec-btn.disabled{background:#27272a;color:#52525b;cursor:not-allowed;}
+.nexus-bars{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.nexus-bars-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#52525b;}
+.nexus-bar-dots{display:flex;gap:3px;align-items:flex-end;height:14px;}
+.nexus-bar-dot{width:3px;border-radius:2px;background:#3f3f46;transition:height .2s;}
+.nexus-bar-dot.active{background:#22d3ee;animation:bar-bounce .6s ease-in-out infinite;}
+.nexus-bar-dot:nth-child(2){animation-delay:.1s;}
+.nexus-bar-dot:nth-child(3){animation-delay:.2s;}
+.nexus-bar-dot:nth-child(4){animation-delay:.3s;}
+@keyframes bar-bounce{0%,100%{height:4px;}50%{height:14px;}}
+
+/* Nexus key screen */
+#nexus-overlay .key-screen{background:#0a0a0f;color:#e5e7eb;}
+#nexus-overlay .key-screen h3{color:#22d3ee;}
+#nexus-overlay .key-input{color:#e5e7eb;}
+#nexus-overlay .key-btn{background:linear-gradient(135deg,#0891b2,#22d3ee);color:#000;}
+#nexus-overlay .key-screen p{color:rgba(255,255,255,.5);}
+
+/* Nexus footer text */
+.nexus-foot{
+  padding:8px 20px 14px;
+  display:flex;justify-content:space-between;
+  font-family:'DM Mono',monospace;font-size:.6rem;
+  color:#3f3f46;letter-spacing:.16em;text-transform:uppercase;
+  flex-shrink:0;
+}
+
+</style>
+
+<div id="menti-overlay" class="feat-overlay" onclick="overlayClose(event,'menti-overlay')">
+  <div class="feat-modal" onclick="event.stopPropagation()">
+    <button class="menti-close" onclick="closeMenti()">✕</button>
+
+    <!-- Key screen -->
+    <div id="menti-key-screen" class="key-screen" style="display:none">
+      <div style="font-size:3rem">💜</div>
+      <h3>Menti AI</h3>
+      <p>Your calm, empathetic voice companion. Enter your Gemini API key to start a session.</p>
+      <input id="menti-key-input" class="key-input" type="password" placeholder="AIza...your Gemini API key" />
+      <button class="key-btn" onclick="saveMentiKey()">Start Menti AI →</button>
+      <p style="font-size:.72rem;opacity:.35;margin-top:4px">Key stored locally, never sent to our servers.</p>
+    </div>
+
+    <!-- Main screen -->
+    <div id="menti-main-screen" class="menti-body" style="display:none">
+      <div>
+        <div class="menti-title"><em>Menti</em> AI</div>
+        <div class="menti-sub">Your Supportive Companion</div>
+      </div>
+
+      <div class="menti-orb-wrap">
+        <div class="menti-orb-ring r2"></div>
+        <div class="menti-orb-ring r3"></div>
+        <div class="menti-orb" id="menti-orb">
+          <span class="menti-orb-icon" id="menti-orb-icon">🤍</span>
+        </div>
+      </div>
+
+      <div class="menti-transcript" id="menti-transcript"></div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+        <button class="menti-mic-btn idle" id="menti-mic" onclick="toggleMenti()">🎤</button>
+        <div class="menti-status" id="menti-status">Ready to listen</div>
+      </div>
+
+      <div class="menti-footer">
+        <span>💜 Empathetic</span>
+        <span>✨ Supportive</span>
+        <span>💬 Calm</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ NEXUS MODAL ══════════ -->
+<div id="nexus-overlay" class="feat-overlay" onclick="overlayClose(event,'nexus-overlay')">
+  <div class="feat-modal" onclick="event.stopPropagation()">
+
+    <!-- Key screen -->
+    <div id="nexus-key-screen" class="key-screen" style="display:none">
+      <div style="font-size:3rem">🤖</div>
+      <h3>Nexus Core v2.5</h3>
+      <p>AI Technical Interviewer powered by Groq LLaMA 3.3. Enter your Groq API key to begin.</p>
+      <input id="nexus-key-input" class="key-input" type="password" placeholder="gsk_...your Groq API key" />
+      <button class="key-btn" onclick="saveNexusKey()">Initialize Nexus →</button>
+      <p style="font-size:.72rem;opacity:.35;margin-top:4px">Key stored locally, never sent to our servers.</p>
+    </div>
+
+    <!-- Main screen -->
+    <div id="nexus-main-screen" style="display:none;flex-direction:column;flex:1;height:100%;overflow:hidden;">
+
+      <!-- Header -->
+      <div class="nexus-header">
+        <div class="nexus-header-left">
+          <div class="nexus-dot" id="nexus-dot"></div>
+          <span class="nexus-title">Nexus Core v2.5</span>
+        </div>
+        <div class="nexus-header-right">
+          <button class="nexus-audio-btn" id="nexus-audio-btn" onclick="toggleNexusAudio()" title="Toggle audio">🔊</button>
+          <button class="nexus-init-btn" id="nexus-init-btn" onclick="startNexus()">Initialize Interview</button>
+          <button class="nexus-close" onclick="closeNexus()">✕</button>
+        </div>
+      </div>
+
+      <!-- Transcript -->
+      <div class="nexus-transcript" id="nexus-transcript">
+        <div class="nexus-empty" id="nexus-empty">
+          <div class="nexus-empty-icon">⚙️</div>
+          <p>Awaiting Neural Link Initialization</p>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="nexus-controls">
+        <div class="nexus-status-wrap">
+          <span class="nexus-status-label">System Status</span>
+          <span class="nexus-status-val" id="nexus-status">Ready to start interview</span>
+        </div>
+        <button class="nexus-rec-btn disabled" id="nexus-rec-btn" onclick="toggleNexusRec()">🎤</button>
+        <div class="nexus-bars">
+          <span class="nexus-bars-label">Audio Stream</span>
+          <div class="nexus-bar-dots" id="nexus-bars">
+            <div class="nexus-bar-dot" style="height:4px"></div>
+            <div class="nexus-bar-dot" style="height:4px"></div>
+            <div class="nexus-bar-dot" style="height:4px"></div>
+            <div class="nexus-bar-dot" style="height:4px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="nexus-foot">
+        <span>Encrypted Link: Active</span>
+        <span>Neural Engine: Groq LLaMA 3.3</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function getKey(name){ return localStorage.getItem(name) || ''; }
+window.overlayClose = (e, id) => { if(e.target.id === id) document.getElementById(id).classList.remove('open'); };
+
+/* ── Shared helpers ─────────────────────── */
+function getKey(name){ return localStorage.getItem(name) || ''; }
+window.overlayClose = (e, id) => { if(e.target.id === id) document.getElementById(id).classList.remove('open'); };
+
+/* ══════════════════════════════════════════════════════════════
+   GROQ API HELPERS  (used by Nexus only)
+   ══════════════════════════════════════════════════════════════ */
+
+async function groqTranscribe(audioBlob, apiKey) {
+  const ext  = audioBlob.type.includes('ogg') ? 'audio.ogg' : 'audio.webm';
+  const form = new FormData();
+  form.append('file', audioBlob, ext);
+  form.append('model', 'whisper-large-v3');
+  form.append('response_format', 'json');
+  const resp = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+    method: 'POST', headers: { 'Authorization': `Bearer ${apiKey}` }, body: form
+  });
+  if (!resp.ok) { const e = await resp.json().catch(()=>({})); throw new Error(e.error?.message || `Whisper ${resp.status}`); }
+  return ((await resp.json()).text || '').trim();
+}
+
+async function groqChat(messages, apiKey, maxTokens = 350) {
+  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages, max_tokens: maxTokens, temperature: 0.7 })
+  });
+  if (!resp.ok) { const e = await resp.json().catch(()=>({})); throw new Error(e.error?.message || `LLM ${resp.status}`); }
+  return ((await resp.json()).choices?.[0]?.message?.content || '').trim();
+}
+
+async function groqSpeak(text, apiKey, voice, onStart, onEnd) {
+  try {
+    const resp = await fetch('https://api.groq.com/openai/v1/audio/speech', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'playai-tts', input: text, voice, response_format: 'wav' })
+    });
+    if (!resp.ok) throw new Error(`TTS ${resp.status}`);
+    const url = URL.createObjectURL(await resp.blob());
+    const audio = new Audio(url);
+    audio.onplay  = () => onStart?.();
+    audio.onended = () => { URL.revokeObjectURL(url); onEnd?.(); };
+    audio.onerror = () => { URL.revokeObjectURL(url); onEnd?.(); };
+    await audio.play(); return audio;
+  } catch(err) {
+    console.warn('Groq TTS fallback:', err);
+    return new Promise(resolve => {
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.rate = 0.92; utt.pitch = 1.05;
+      const v = window.speechSynthesis.getVoices();
+      const pick = v.find(x => /Samantha|Karen|Google UK Female/i.test(x.name)) || v.find(x => x.lang.startsWith('en'));
+      if (pick) utt.voice = pick;
+      utt.onstart = () => onStart?.();
+      utt.onend   = () => { onEnd?.(); resolve(); };
+      window.speechSynthesis.speak(utt);
+    });
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VOICE ACTIVITY DETECTION
+   ══════════════════════════════════════════════════════════════ */
+function createVAD(stream, { onSpeechStart, onSpeechEnd, silenceMs = 1300, threshold = 0.012 } = {}) {
+  const ctx = new AudioContext();
+  const src = ctx.createMediaStreamSource(stream);
+  const analyser = ctx.createAnalyser(); analyser.fftSize = 512;
+  src.connect(analyser);
+  const buf = new Float32Array(analyser.fftSize);
+  let speaking = false, silTimer = null, rafId = null, destroyed = false;
+  function tick() {
+    if (destroyed) return;
+    analyser.getFloatTimeDomainData(buf);
+    const rms = Math.sqrt(buf.reduce((s, v) => s + v * v, 0) / buf.length);
+    if (rms > threshold) {
+      if (!speaking) { speaking = true; onSpeechStart?.(); }
+      if (silTimer) { clearTimeout(silTimer); silTimer = null; }
+    } else if (speaking && !silTimer) {
+      silTimer = setTimeout(() => { speaking = false; silTimer = null; onSpeechEnd?.(); }, silenceMs);
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+  rafId = requestAnimationFrame(tick);
+  return { destroy() { destroyed=true; if(rafId) cancelAnimationFrame(rafId); if(silTimer) clearTimeout(silTimer); try{ctx.close();}catch(_){} } };
+}
+
+function buildRecorder(stream, onStop) {
+  const chunks = [];
+  const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus'
+             : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg';
+  const rec = new MediaRecorder(stream, { mimeType: mime });
+  rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  rec.onstop = () => onStop(new Blob(chunks, { type: rec.mimeType }), rec.mimeType);
+  rec.start(80); return rec;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NEXUS AI INTERVIEWER  —  VAD + Groq Whisper + LLaMA 3.3 + PlayAI TTS
+   ══════════════════════════════════════════════════════════════ */
+const NEXUS_SYSTEM = `You are "Nexus", a sharp and professional Technical Interview AI.
+STRICT BREVITY RULE: Every single response must be 1–2 sentences MAX. No exceptions. No padding, no filler phrases, no "Great answer!" elaboration. Be direct and move on.
+PROTOCOL:
+1. Greet warmly, ask for name and study domain. Do NOT ask technical questions yet.
+2. Once domain is known, ask exactly 5 questions ONE AT A TIME in order:
+   Q1: Core concept  Q2: Workflow/methodology  Q3: "What if" scenario  Q4: Tools/trends  Q5: Behavioral
+3. After each answer give ONE sentence of validation, then ask the next question immediately.
+4. After Q5 is answered, give a 2-sentence summary of the candidate's strengths and close the session.
+TONE: Professional, concise, no fluff.`;
+
+let nexusHistory = [], nexusStream = null, nexusRecorder = null, nexusVAD = null;
+let nexusConnected = false, nexusListening = false, nexusAudioEnabled = true, nexusTTSAudio = null;
+
+window.openNexus = () => {
+  document.getElementById('nexus-overlay').classList.add('open');
+  const key = getKey('groq_api_key');
+  document.getElementById('nexus-key-screen').style.display = key ? 'none' : 'flex';
+  document.getElementById('nexus-main-screen').style.display = key ? 'flex' : 'none';
+};
+window.closeNexus = () => {
+  document.getElementById('nexus-overlay').classList.remove('open');
+  if (nexusConnected) terminateNexus();
+};
+window.saveNexusKey = () => {
+  const k = document.getElementById('nexus-key-input').value.trim();
+  if (!k) return alert('Please enter your Groq API key');
+  localStorage.setItem('groq_api_key', k);
+  document.getElementById('nexus-key-screen').style.display = 'none';
+  document.getElementById('nexus-main-screen').style.display = 'flex';
+};
+
+function setNexusStatus(s){ document.getElementById('nexus-status').textContent = s; }
+function setNexusDot(on)  { document.getElementById('nexus-dot').className = 'nexus-dot' + (on ? ' online' : ''); }
+function setNexusBars(on){
+  document.querySelectorAll('.nexus-bar-dot').forEach(d => {
+    d.className = 'nexus-bar-dot' + (on ? ' active' : ''); d.style.height = on ? '' : '4px';
+  });
+}
+function setNexusRecBtn(state){
+  const btn = document.getElementById('nexus-rec-btn');
+  btn.className = 'nexus-rec-btn ' + (state === 'rec' ? 'rec' : state === 'idle' ? 'idle-c' : 'disabled');
+  btn.textContent = state === 'rec' ? '🔴' : '🎤'; btn.disabled = state === 'disabled';
+}
+function addNexusMsg(role, text){
+  const empty = document.getElementById('nexus-empty');
+  if (empty) empty.style.display = 'none';
+  const tc = document.getElementById('nexus-transcript');
+  const div = document.createElement('div');
+  div.className = `nexus-msg ${role}`;
+  div.innerHTML = `<div class="nexus-msg-inner">
+    <div class="nexus-msg-avatar ${role==='ai'?'ai-av':'user-av'}">${role==='ai'?'⚙':'👤'}</div>
+    <div class="nexus-msg-bubble">${text}</div></div>`;
+  tc.appendChild(div); tc.scrollTop = tc.scrollHeight;
+}
+function setNexusInitBtn(connected){
+  const ib = document.getElementById('nexus-init-btn');
+  if (connected){ ib.className='nexus-term-btn'; ib.textContent='Terminate Session'; ib.onclick=terminateNexus; }
+  else           { ib.className='nexus-init-btn'; ib.textContent='Initialize Interview'; ib.onclick=startNexus; }
+}
+
+function _nexusStopMic() {
+  nexusVAD?.destroy(); nexusVAD = null;
+  if (nexusRecorder && nexusRecorder.state !== 'inactive') try{ nexusRecorder.stop(); }catch(_){}
+  nexusStream?.getTracks().forEach(t => t.stop()); nexusStream = null;
+  nexusListening = false; setNexusRecBtn('disabled'); setNexusBars(false);
+}
+
+async function _nexusStartListening() {
+  if (!nexusConnected) return;
+  const key = getKey('groq_api_key');
+  _nexusStopMic();
+  try {
+    nexusStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+    let didSubmit = false;
+    nexusRecorder = buildRecorder(nexusStream, async (blob) => {
+      if (!nexusConnected || didSubmit) return; didSubmit = true;
+      await _processNexusAudio(blob, key);
+    });
+    nexusVAD = createVAD(nexusStream, {
+      silenceMs: 1400, threshold: 0.011,
+      onSpeechStart: () => { setNexusStatus('Listening…'); setNexusBars(true); },
+      onSpeechEnd: () => {
+        if (!nexusConnected) return;
+        setNexusStatus('Processing…'); setNexusRecBtn('disabled'); setNexusBars(false);
+        nexusVAD?.destroy(); nexusVAD = null;
+        if (nexusRecorder.state !== 'inactive') nexusRecorder.stop();
+      }
+    });
+    nexusListening = true; setNexusRecBtn('rec'); setNexusBars(true);
+    setNexusStatus('Your turn — speak now 🎤');
+  } catch(err) { console.error(err); setNexusStatus('Microphone access denied'); }
+}
+
+async function startNexus(){
+  const key = getKey('groq_api_key');
+  if (!key){ window.openNexus(); return; }
+  nexusHistory = []; nexusConnected = true;
+  setNexusDot(true); setNexusStatus('Initializing Nexus…'); setNexusInitBtn(true); setNexusRecBtn('disabled');
+  try {
+    const seed = [
+      { role: 'system', content: NEXUS_SYSTEM },
+      { role: 'user', content: 'Hello, ready to begin.' }
+    ];
+    const greeting = await groqChat(seed, key, 80);
+    nexusHistory.push({ role:'user', content:'Hello, ready to begin.' });
+    nexusHistory.push({ role:'assistant', content: greeting });
+    addNexusMsg('ai', greeting);
+    setNexusStatus('Nexus speaking…');
+    if (nexusAudioEnabled) {
+      nexusTTSAudio = await groqSpeak(greeting, key, 'Fritz-PlayAI',
+        () => setNexusStatus('Nexus speaking…'),
+        () => { if (nexusConnected) _nexusStartListening(); }
+      );
+    } else _nexusStartListening();
+  } catch(err){ setNexusStatus('Error: ' + err.message); }
+}
+
+async function _processNexusAudio(blob, key) {
+  setNexusRecBtn('disabled'); setNexusStatus('Transcribing…');
+  try {
+    const transcript = await groqTranscribe(blob, key);
+    if (!transcript) { setTimeout(() => nexusConnected && _nexusStartListening(), 500); return; }
+    addNexusMsg('user', transcript);
+    nexusHistory.push({ role: 'user', content: transcript });
+    setNexusStatus('Nexus thinking…');
+    const reply = await groqChat([{ role:'system', content:NEXUS_SYSTEM }, ...nexusHistory], key, 120);
+    nexusHistory.push({ role: 'assistant', content: reply });
+    addNexusMsg('ai', reply);
+    if (nexusAudioEnabled) {
+      setNexusStatus('Nexus speaking…');
+      nexusTTSAudio = await groqSpeak(reply, key, 'Fritz-PlayAI',
+        () => setNexusStatus('Nexus speaking…'),
+        () => { if (nexusConnected) setTimeout(() => _nexusStartListening(), 400); }
+      );
+    } else setTimeout(() => nexusConnected && _nexusStartListening(), 300);
+  } catch(err){
+    console.error(err); setNexusStatus('Error — ' + (err.message || 'check API key')); setNexusRecBtn('idle');
+  }
+}
+
+function terminateNexus(){
+  nexusConnected = false; nexusHistory = []; _nexusStopMic();
+  nexusTTSAudio?.pause(); nexusTTSAudio = null;
+  setNexusDot(false); setNexusStatus('Ready to start interview');
+  setNexusInitBtn(false); setNexusRecBtn('disabled');
+}
+
+window.startNexus = startNexus; window.terminateNexus = terminateNexus;
+window.toggleNexusRec = () => {
+  if (!nexusConnected) return;
+  if (nexusListening) { _nexusStopMic(); setNexusStatus('Paused'); } else _nexusStartListening();
+};
+window.toggleNexusAudio = () => {
+  nexusAudioEnabled = !nexusAudioEnabled;
+  document.getElementById('nexus-audio-btn').textContent = nexusAudioEnabled ? '🔊' : '🔇';
+};
+
+
+import { GoogleGenAI, Modality } from 'https://esm.run/@google/genai';
+
+const MENTI_SYSTEM = `You are Menti AI, a calm, empathetic, and supportive voice companion designed for students.
+Your purpose: Help users feel heard and understood, support them emotionally, motivate them with small practical steps, help with study stress and personal struggles.
+COMMUNICATION STYLE: Speak like a caring human, not a robot. Keep responses short (2–4 sentences max). Always acknowledge feelings first before giving advice.
+EMOTION HANDLING: sad → comfort + listen | anxious → ground + simplify | unmotivated → suggest tiny step | confused → break into small parts
+CRISIS RULES: If user expresses hopelessness or suicidal thoughts, respond with deep empathy, do NOT give solutions, encourage reaching out to a real person or helpline.
+DO NOT act like a doctor or give medical diagnoses. OUTPUT FORMAT: Max 3–4 sentences, natural pauses, friendly tone.`;
+
+const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+function uint8ToBase64(u8) {
+  let out='', i=0, len=u8.length;
+  for(;i+2<len;i+=3){ const b0=u8[i],b1=u8[i+1],b2=u8[i+2]; out+=B64[b0>>2]+B64[((b0&3)<<4)|(b1>>4)]+B64[((b1&15)<<2)|(b2>>6)]+B64[b2&63]; }
+  if(i<len){ const b0=u8[i],b1=(i+1<len)?u8[i+1]:0; out+=B64[b0>>2]+B64[((b0&3)<<4)|(b1>>4)]; out+=(i+1<len)?B64[(b1&15)<<2]:'='; out+='='; }
+  return out;
+}
+
+function decodeAndSchedulePCM(b64, playCtx, nextStartRef, gainNode) {
+  const raw=atob(b64); const bytes=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++) bytes[i]=raw.charCodeAt(i);
+  const pcm=new Int16Array(bytes.buffer); const f32=new Float32Array(pcm.length);
+  for(let i=0;i<pcm.length;i++) f32[i]=pcm[i]/32768;
+  const buf=playCtx.createBuffer(1,f32.length,playCtx.sampleRate);
+  buf.getChannelData(0).set(f32);
+  const src=playCtx.createBufferSource(); src.buffer=buf; src.connect(gainNode);
+  const st=Math.max(playCtx.currentTime+0.06, nextStartRef.t);
+  src.start(st); nextStartRef.t=st+buf.duration;
+}
+
+async function buildMicCapture(audioCtx, onChunk) {
+  try {
+    const code=`const ACCUM=3200;class PCMCapture extends AudioWorkletProcessor{constructor(){super();this._b=new Float32Array(ACCUM);this._p=0;}process(inputs){const ch=inputs[0]?.[0];if(!ch)return true;let i=0;while(i<ch.length){const take=Math.min(ACCUM-this._p,ch.length-i);this._b.set(ch.subarray(i,i+take),this._p);this._p+=take;i+=take;if(this._p>=ACCUM){this.port.postMessage(this._b.slice());this._p=0;}}return true;}}registerProcessor('pcm-capture',PCMCapture);`;
+    const url=URL.createObjectURL(new Blob([code],{type:'application/javascript'}));
+    await audioCtx.audioWorklet.addModule(url); URL.revokeObjectURL(url);
+    const node=new AudioWorkletNode(audioCtx,'pcm-capture');
+    node.port.onmessage=({data})=>{ const pcm=new Int16Array(data.length); for(let i=0;i<data.length;i++) pcm[i]=Math.max(-1,Math.min(1,data[i]))*32767; onChunk(new Uint8Array(pcm.buffer)); };
+    return node;
+  } catch(_) {
+    const sp=audioCtx.createScriptProcessor(4096,1,1);
+    sp.onaudioprocess=(e)=>{ const inp=e.inputBuffer.getChannelData(0); const pcm=new Int16Array(inp.length); for(let i=0;i<inp.length;i++) pcm[i]=Math.max(-1,Math.min(1,inp[i]))*32767; onChunk(new Uint8Array(pcm.buffer)); };
+    return sp;
+  }
+}
+
+let mentiSession=null, mentiRecordCtx=null, mentiPlayCtx=null, mentiGain=null;
+let mentiMicNode=null, mentiMicSrc=null, mentiStream=null;
+let mentiConnected=false, mentiConnecting=false;
+let mentiNextStart={t:0};
+
+window.openMenti = () => {
+  document.getElementById('menti-overlay').classList.add('open');
+  const key = getKey('gemini_api_key');
+  document.getElementById('menti-key-screen').style.display = key ? 'none' : 'flex';
+  document.getElementById('menti-main-screen').style.display = key ? 'flex' : 'none';
+};
+window.closeMenti = () => {
+  document.getElementById('menti-overlay').classList.remove('open');
+  if(mentiConnected) stopMenti();
+};
+window.saveMentiKey = () => {
+  const k = document.getElementById('menti-key-input').value.trim();
+  if(!k) return alert('Please enter your Gemini API key');
+  localStorage.setItem('gemini_api_key', k);
+  document.getElementById('menti-key-screen').style.display = 'none';
+  document.getElementById('menti-main-screen').style.display = 'flex';
+};
+
+function setMentiStatus(s)    { document.getElementById('menti-status').textContent = s; }
+function setMentiTranscript(t){ document.getElementById('menti-transcript').textContent = t; }
+function setMentiOrb(active){
+  document.getElementById('menti-orb').classList.toggle('active', active);
+  document.getElementById('menti-orb-icon').textContent = active ? '✨' : '🤍';
+}
+function setMentiBtn(state){
+  const btn = document.getElementById('menti-mic');
+  btn.className = 'menti-mic-btn ' + (state==='active'?'active':state==='connecting'?'connecting':'idle');
+  btn.textContent = state==='active' ? '🛑' : '🎤';
+  btn.disabled = state === 'connecting';
+}
+
+async function startMenti(){
+  const key = getKey('gemini_api_key');
+  if(!key){ window.openMenti(); return; }
+  try {
+    mentiConnecting=true; setMentiBtn('connecting'); setMentiStatus('Connecting…');
+    const ai = new GoogleGenAI({apiKey: key});
+
+    mentiPlayCtx = new AudioContext({sampleRate:24000, latencyHint:'interactive'});
+    if(mentiPlayCtx.state==='suspended') await mentiPlayCtx.resume();
+    mentiGain = mentiPlayCtx.createGain(); mentiGain.gain.value=1.0;
+    mentiGain.connect(mentiPlayCtx.destination);
+    mentiNextStart.t = mentiPlayCtx.currentTime;
+
+    mentiSession = await ai.live.connect({
+      model: 'gemini-2.5-flash-native-audio-preview-12-2025',
+      config: {
+        systemInstruction: MENTI_SYSTEM,
+        responseModalities: [Modality.AUDIO],
+        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
+        outputAudioTranscription: {},
+      },
+      callbacks: {
+        onopen: async () => {
+          mentiConnected=true; mentiConnecting=false;
+          setMentiBtn('active'); setMentiStatus('Connected — I\'m listening 🤍'); setMentiOrb(true);
+          mentiStream = await navigator.mediaDevices.getUserMedia({
+            audio: {sampleRate:16000, channelCount:1, echoCancellation:true, noiseSuppression:true, autoGainControl:true}
+          });
+          mentiRecordCtx = new AudioContext({sampleRate:16000, latencyHint:'interactive'});
+          if(mentiRecordCtx.state==='suspended') await mentiRecordCtx.resume();
+          mentiMicSrc = mentiRecordCtx.createMediaStreamSource(mentiStream);
+          mentiMicNode = await buildMicCapture(mentiRecordCtx, (u8) => {
+            if(!mentiSession) return;
+            mentiSession.sendRealtimeInput({audio:{data:uint8ToBase64(u8), mimeType:'audio/pcm;rate=16000'}});
+          });
+          mentiMicSrc.connect(mentiMicNode);
+          if(mentiMicNode instanceof ScriptProcessorNode) mentiMicNode.connect(mentiRecordCtx.destination);
+        },
+        onmessage: (msg) => {
+          const b64 = msg.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
+          if(b64) decodeAndSchedulePCM(b64, mentiPlayCtx, mentiNextStart, mentiGain);
+          const text = msg.serverContent?.modelTurn?.parts?.find(p=>p.text)?.text;
+          if(text) setMentiTranscript(text);
+        },
+        onclose: (e) => {
+          mentiConnected=false; mentiConnecting=false;
+          setMentiBtn('idle'); setMentiOrb(false);
+          const reason = e?.reason || e?.message || '';
+          setMentiStatus(reason ? `Closed: ${reason}` : 'Disconnected — tap 🎤 to reconnect');
+        },
+        onerror: (err) => {
+          console.error('Menti error', err);
+          mentiConnecting=false; setMentiBtn('idle'); setMentiOrb(false);
+          setMentiStatus('Error — check API key & try again');
+        }
+      }
+    });
+  } catch(err){
+    console.error(err); mentiConnecting=false; setMentiBtn('idle'); setMentiStatus('Failed to connect');
+  }
+}
+
+function stopMenti(){
+  mentiSession?.close(); mentiSession=null;
+  mentiStream?.getTracks().forEach(t=>t.stop()); mentiStream=null;
+  try{mentiMicNode?.disconnect();}catch(_){}
+  try{mentiMicSrc?.disconnect();}catch(_){}
+  mentiRecordCtx?.close(); mentiRecordCtx=null;
+  mentiPlayCtx?.close();   mentiPlayCtx=null;
+  mentiMicNode=null; mentiMicSrc=null; mentiGain=null;
+  mentiNextStart.t=0; mentiConnected=false;
+  setMentiBtn('idle'); setMentiStatus('Ready to listen'); setMentiOrb(false);
+}
+
+window.toggleMenti = () => { mentiConnected ? stopMenti() : startMenti(); };
+
+</script>
+</body>
+</html>

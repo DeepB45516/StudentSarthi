@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Study Hub - Student Sarthi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0a0f;--paper:#f5f3ee;--warm:#ede9e0;--card:#fff;
+  --border:#d6d0c4;--accent:#7c3aed;--blue:#1a56db;--green:#059669;
+  --cyan:#0891b2;--amber:#d97706;--text:#1c1917;--muted:#78716c;
+  --light:#a8a29e;--shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:0 4px 6px rgba(0,0,0,.07),0 12px 40px rgba(0,0,0,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--text);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;opacity:.6}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(245,243,238,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--ink);display:flex;align-items:center;gap:8px}
+.nav-logo span{color:var(--accent)}
+.nav-badge{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:3px 8px;border-radius:3px}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-user{font-size:.85rem;color:var(--muted);font-family:'DM Mono',monospace}
+.nav-user strong{color:var(--text)}
+.btn-back,.btn-logout{padding:7px 16px;background:transparent;border:1.5px solid var(--border);border-radius:6px;font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:var(--muted);transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-back:hover,.btn-logout:hover{border-color:var(--ink);color:var(--ink)}
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 60px)}
+/* SIDEBAR */
+.sidebar{width:240px;flex-shrink:0;background:var(--card);border-right:1.5px solid var(--border);padding:24px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+.sidebar-section{padding:0 16px;margin-bottom:24px}
+.sidebar-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding:0 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--text);font-size:.87rem;font-weight:500;transition:all .15s;border:none;background:transparent;width:100%;text-align:left}
+.nav-item:hover{background:var(--warm);color:var(--ink)}
+.nav-item.active{background:rgba(124,58,237,.08);color:var(--accent);font-weight:600}
+.nav-item .icon{font-size:1rem;width:20px;text-align:center}
+.nav-item .cnt{margin-left:auto;font-family:'DM Mono',monospace;font-size:.58rem;background:var(--warm);color:var(--muted);padding:2px 7px;border-radius:10px}
+/* MAIN CONTENT */
+.content{flex:1;padding:32px;min-width:0;max-width:100%}
+/* HERO */
+.page-hero{background:var(--ink);border-radius:16px;padding:32px 36px;margin-bottom:28px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 50%,rgba(124,58,237,.25),transparent 55%);pointer-events:none}
+.page-hero-tag{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,243,238,.4);margin-bottom:10px}
+.page-hero-title{font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;color:#f5f3ee;line-height:1.1;margin-bottom:8px}
+.page-hero-title em{font-style:normal;color:#c084fc}
+.page-hero-sub{font-size:.87rem;color:rgba(245,243,238,.5);max-width:480px;line-height:1.7;margin-bottom:20px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn-primary{padding:10px 22px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.87rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:#6d28d9}
+.btn-ghost{padding:10px 22px;background:rgba(255,255,255,.06);color:rgba(245,243,238,.7);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.87rem;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{background:rgba(255,255,255,.1);color:#f5f3ee}
+/* SEARCH BAR */
+.search-row{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.search-wrap{flex:1;min-width:220px;max-width:420px;position:relative}
+.search-wrap input{width:100%;padding:10px 14px 10px 38px;border:1.5px solid var(--border);border-radius:9px;background:var(--card);font-family:'DM Sans',sans-serif;font-size:.87rem;color:var(--text);outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none}
+.filter-select{padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;background:var(--card);font-family:'DM Mono',monospace;font-size:.7rem;color:var(--text);outline:none;cursor:pointer;transition:border-color .2s}
+.filter-select:focus{border-color:var(--accent)}
+/* SECTION */
+.section-title{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+/* CARDS GRID */
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-bottom:32px}
+.resource-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.resource-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.resource-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0;transition:opacity .2s}
+.resource-card:hover::before{opacity:1}
+.rc-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.rc-type{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:4px;border:1px solid}
+.type-notes{background:#f0fdf4;color:#059669;border-color:#bbf7d0}
+.type-qb{background:#eff6ff;color:#1a56db;border-color:#bfdbfe}
+.type-lab{background:#fff5f0;color:#ff5c00;border-color:#ffd0b5}
+.type-ref{background:#ecfeff;color:#0891b2;border-color:#a5f3fc}
+.type-slides{background:#faf5ff;color:#7c3aed;border-color:#ddd6fe}
+.type-video{background:#fff8f0;color:#d97706;border-color:#fde68a}
+.rc-bm{background:none;border:none;cursor:pointer;font-size:1.1rem;transition:transform .2s;padding:0}
+.rc-bm:hover{transform:scale(1.2)}
+.rc-title{font-family:'Syne',sans-serif;font-size:.98rem;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.35}
+.rc-sub{font-size:.78rem;color:var(--muted);margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5}
+.rc-meta{display:flex;gap:10px;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--light);flex-wrap:wrap}
+.rc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.rc-rating{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--amber)}
+.btn-dl{padding:7px 14px;background:var(--ink);color:var(--paper);border:none;border-radius:6px;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-dl:hover{background:#1a1a2e}
+/* TRENDING GRID */
+.trend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:32px}
+.trend-card{background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:16px;cursor:pointer;transition:all .2s}
+.trend-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+/* BRANCH PILLS */
+.branch-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.branch-pill{padding:7px 16px;border-radius:20px;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--muted);transition:all .2s}
+.branch-pill:hover,.branch-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* UPLOAD FORM */
+.upload-form{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:32px;max-width:620px;box-shadow:var(--shadow)}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.form-group label{font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.form-group input,.form-group select,.form-group textarea{padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;background:var(--paper);font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--text);outline:none;transition:border-color .2s;width:100%}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.drop-zone{border:2px dashed var(--border);border-radius:10px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;color:var(--muted);font-size:.87rem;margin-bottom:18px}
+.drop-zone:hover{border-color:var(--accent);background:rgba(124,58,237,.03)}
+.btn-submit{padding:12px 28px;background:var(--ink);color:var(--paper);border:none;border-radius:8px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;width:100%;font-weight:600}
+.btn-submit:hover{background:#2d1060}
+/* FORUM */
+.forum-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;transition:all .2s;cursor:pointer}
+.forum-card:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.forum-tag{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:rgba(124,58,237,.08);color:var(--accent);border:1px solid rgba(124,58,237,.2);margin-right:8px}
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+.stat-box{background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+.stat-box .num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--ink)}
+.stat-box .lbl{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:10px;font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.08em;z-index:500;transform:translateY(80px);opacity:0;transition:all .35s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+/* EMPTY */
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-icon{font-size:2.8rem;margin-bottom:10px}
+.empty-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:6px}
+@media(max-width:768px){.sidebar{display:none}.layout{flex-direction:column}.content{padding:20px 16px}}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}.hero-btns{flex-direction:column}}
+</style>
+</head>
+<body data-user-name="{{ user.name }}">
+
+<nav>
+  <div class="nav-logo">Study<span>Hub</span><div class="nav-badge">BETA</div></div>
+  <div class="nav-right">
+    <div class="nav-user">Signed in as <strong>{{ user.name }}</strong></div>
+    <a href="/dashboard" class="btn-back">← Dashboard</a>
+    <button class="btn-logout" onclick="logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navigation</div>
+      <button class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')"><span class="icon">🏠</span> Dashboard</button>
+      <button class="nav-item" id="nav-browse" onclick="showPage('browse')"><span class="icon">🔍</span> Browse <span class="cnt" id="cnt-browse">0</span></button>
+      <button class="nav-item" id="nav-trending" onclick="showPage('trending')"><span class="icon">🔥</span> Trending</button>
+      <button class="nav-item" id="nav-bookmarks" onclick="showPage('bookmarks')"><span class="icon">🔖</span> Bookmarks <span class="cnt" id="cnt-bm">0</span></button>
+      <button class="nav-item" id="nav-forum" onclick="showPage('forum')"><span class="icon">💬</span> Forum</button>
+      <button class="nav-item" id="nav-upload" onclick="showPage('upload')"><span class="icon">⬆️</span> Upload</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Branches</div>
+      <button class="nav-item" onclick="filterBranch('ce')"><span class="icon">💻</span> Computer Engg</button>
+      <button class="nav-item" onclick="filterBranch('aids')"><span class="icon">🤖</span> AI &amp; Data Sci</button>
+      <button class="nav-item" onclick="filterBranch('me')"><span class="icon">⚙️</span> Mechanical</button>
+      <button class="nav-item" onclick="filterBranch('elex')"><span class="icon">📡</span> Electronics</button>
+      <button class="nav-item" onclick="filterBranch('it')"><span class="icon">🌐</span> IT</button>
+      <button class="nav-item" onclick="filterBranch('civil')"><span class="icon">🏗️</span> Civil</button>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ─── DASHBOARD PAGE ─── -->
+    <div id="page-dashboard">
+      <div class="page-hero">
+        <div class="page-hero-tag">Study Resource Hub</div>
+        <h1 class="page-hero-title">Your Academic<br><em>Resource Library</em></h1>
+        <p class="page-hero-sub">Access curated notes, question banks, lab manuals and more — organized by branch, semester, and subject.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showPage('browse')">📚 Browse Resources</button>
+          <button class="btn-ghost" onclick="showPage('upload')">⬆️ Upload Resource</button>
+        </div>
+      </div>
+      <!-- Stats -->
+      <div class="stats-row" id="dashStats"></div>
+      <!-- Recent -->
+      <p class="section-title">Recently Added</p>
+      <div class="resources-grid" id="recentGrid"></div>
+      <!-- Trending subjects -->
+      <p class="section-title">Trending Subjects</p>
+      <div class="trend-grid" id="trendGrid"></div>
+    </div>
+
+    <!-- ─── BROWSE PAGE ─── -->
+    <div id="page-browse" style="display:none">
+      <div class="search-row">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search notes, subjects..." id="browseSearch" oninput="renderBrowse()"/>
+        </div>
+        <select class="filter-select" id="branchFilter" onchange="renderBrowse()">
+          <option value="">All Branches</option>
+          <option value="ce">Computer Engg</option><option value="aids">AI &amp; Data Science</option>
+          <option value="me">Mechanical</option><option value="elex">Electronics</option>
+          <option value="it">IT</option><option value="civil">Civil</option>
+        </select>
+        <select class="filter-select" id="typeFilter" onchange="renderBrowse()">
+          <option value="">All Types</option>
+          <option value="Notes">Notes</option><option value="Question Bank">Question Bank</option>
+          <option value="Lab Manual">Lab Manual</option><option value="Reference Book">Reference Book</option>
+          <option value="Slides">Slides</option><option value="Video">Video</option>
+        </select>
+        <select class="filter-select" id="semFilter" onchange="renderBrowse()">
+          <option value="">All Semesters</option>
+          <option value="3">Sem 3</option><option value="4">Sem 4</option>
+          <option value="5">Sem 5</option><option value="6">Sem 6</option>
+        </select>
+      </div>
+      <p class="section-title">Browse Resources</p>
+      <div class="resources-grid" id="browseGrid"></div>
+    </div>
+
+    <!-- ─── TRENDING PAGE ─── -->
+    <div id="page-trending" style="display:none">
+      <p class="section-title">Trending Subjects This Week</p>
+      <div class="trend-grid" id="trendFullGrid"></div>
+      <p class="section-title" style="margin-top:32px">Top Resources</p>
+      <div class="resources-grid" id="trendTopGrid"></div>
+    </div>
+
+    <!-- ─── BOOKMARKS PAGE ─── -->
+    <div id="page-bookmarks" style="display:none">
+      <p class="section-title">Bookmarked Resources</p>
+      <div class="resources-grid" id="bmGrid"></div>
+    </div>
+
+    <!-- ─── FORUM PAGE ─── -->
+    <div id="page-forum" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div></div>
+        <button class="btn-primary" onclick="openForumPost()">＋ New Post</button>
+      </div>
+      <div id="forumList"></div>
+      <div id="forumPostForm" style="display:none;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px">
+        <div class="form-group"><label>Post Title</label><input type="text" id="forumTitle" placeholder="e.g. Best resources for DBMS?"/></div>
+        <div class="form-group"><label>Content</label><textarea id="forumContent" placeholder="Share your question or discussion..." rows="4"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Tag</label><select id="forumTag"><option>General</option><option>Question</option><option>Resource Share</option><option>Tips</option><option>Help Needed</option></select></div>
+          <div class="form-group"><label>Branch</label><select id="forumBranch"><option value="">All</option><option value="ce">CE</option><option value="aids">AI&DS</option><option value="me">ME</option><option value="it">IT</option></select></div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-submit" style="width:auto;padding:11px 28px" onclick="submitForumPost()">Post →</button>
+          <button style="padding:11px 20px;border:1.5px solid var(--border);border-radius:8px;background:transparent;cursor:pointer;font-family:'DM Mono',monospace;font-size:.7rem" onclick="document.getElementById('forumPostForm').style.display='none'">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── UPLOAD PAGE ─── -->
+    <div id="page-upload" style="display:none">
+      <p class="section-title">Upload a Resource</p>
+      <div class="upload-form">
+        <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+          <div style="font-size:2.2rem;margin-bottom:8px">📤</div>
+          <div style="font-weight:600;margin-bottom:4px">Click to upload or drag & drop</div>
+          <div style="font-size:.78rem">PDF, PPT, DOC, XLSX — max 25 MB</div>
+          <input type="file" id="fileInput" style="display:none" accept=".pdf,.pptx,.doc,.docx,.xlsx" onchange="handleFileSelect(event)"/>
+        </div>
+        <div id="fileDisplay" style="display:none;padding:10px 14px;background:var(--warm);border-radius:8px;font-size:.83rem;margin-bottom:18px;color:var(--text)">📎 <span id="fileName"></span></div>
+        <div class="form-row">
+          <div class="form-group"><label>Title *</label><input type="text" id="upTitle" placeholder="e.g. DBMS Unit 4 Notes"/></div>
+          <div class="form-group"><label>Subject *</label><input type="text" id="upSubject" placeholder="e.g. Database Management"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Branch *</label>
+            <select id="upBranch"><option value="">Select</option><option value="ce">Computer Engg</option><option value="aids">AI &amp; Data Science</option><option value="me">Mechanical</option><option value="elex">Electronics</option><option value="it">IT</option><option value="civil">Civil</option></select>
+          </div>
+          <div class="form-group"><label>Semester *</label>
+            <select id="upSem"><option value="">Select</option><option value="3">Sem 3</option><option value="4">Sem 4</option><option value="5">Sem 5</option><option value="6">Sem 6</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Resource Type *</label>
+            <select id="upType"><option>Notes</option><option>Question Bank</option><option>Lab Manual</option><option>Reference Book</option><option>Slides</option><option>Video</option></select>
+          </div>
+          <div class="form-group"><label>Description</label><input type="text" id="upDesc" placeholder="Brief description..."/></div>
+        </div>
+        <button class="btn-submit" onclick="uploadResource()">Upload Resource →</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── DATA ─── */
+const rawUserName = document.body.dataset.userName || '';
+const hasTemplatePlaceholder = rawUserName.trim().startsWith('{');
+const CURRENT_USER_NAME = hasTemplatePlaceholder ? 'You' : rawUserName;
+const BRANCHES = {ce:'Computer Engineering',aids:'AI & Data Science',me:'Mechanical',elex:'Electronics',it:'IT',civil:'Civil'};
+const TYPE_CLASSES = {Notes:'type-notes','Question Bank':'type-qb','Lab Manual':'type-lab','Reference Book':'type-ref',Slides:'type-slides',Video:'type-video'};
+const TYPE_ICONS = {Notes:'📝','Question Bank':'❓','Lab Manual':'🔬','Reference Book':'📖',Slides:'📊',Video:'🎬'};
+
+const SEED_RESOURCES = [
+  {id:'r1',title:'Data Structures & Algorithms — Complete Notes',subject:'DSA',branch:'ce',sem:'4',type:'Notes',desc:'Comprehensive notes covering arrays, linked lists, trees, graphs, sorting, and dynamic programming with solved examples.',downloads:1240,rating:4.8,uploadedBy:'Apex Team',date:'2026-04-15',bookmarked:false,trending:true},
+  {id:'r2',title:'DBMS Unit 1–5 Question Bank',subject:'DBMS',branch:'ce',sem:'4',type:'Question Bank',desc:'Complete question bank with model answers for all 5 units including ER diagrams, normalization, SQL, transactions.',downloads:980,rating:4.7,uploadedBy:'Priya M.',date:'2026-04-14',bookmarked:false,trending:true},
+  {id:'r3',title:'Machine Learning Lab Manual',subject:'ML Lab',branch:'aids',sem:'5',type:'Lab Manual',desc:'Step-by-step lab experiments for linear regression, decision trees, clustering, and neural networks using Python.',downloads:760,rating:4.6,uploadedBy:'Rohan K.',date:'2026-04-12',bookmarked:false,trending:false},
+  {id:'r4',title:'Computer Networks Reference Book Summary',subject:'CN',branch:'ce',sem:'5',type:'Reference Book',desc:"Summarized notes from Tanenbaum's Computer Networks with diagrams for OSI model, TCP/IP, and routing protocols.",downloads:540,rating:4.5,uploadedBy:'Sneha R.',date:'2026-04-10',bookmarked:false,trending:false},
+  {id:'r5',title:'Thermodynamics Lecture Slides — All Units',subject:'Thermodynamics',branch:'me',sem:'3',type:'Slides',desc:'Full semester slides covering laws of thermodynamics, Rankine cycle, refrigeration, and psychrometrics.',downloads:430,rating:4.4,uploadedBy:'Ankit V.',date:'2026-04-09',bookmarked:false,trending:false},
+  {id:'r6',title:'Deep Learning — Neural Networks Video Lectures',subject:'Deep Learning',branch:'aids',sem:'6',type:'Video',desc:'Recorded video playlist: CNNs, RNNs, LSTMs, transformers, GANs, and practical PyTorch implementations.',downloads:890,rating:4.9,uploadedBy:'Dr. AI Lab',date:'2026-04-08',bookmarked:false,trending:true},
+  {id:'r7',title:'VLSI Design Notes — Unit 3 & 4',subject:'VLSI',branch:'elex',sem:'6',type:'Notes',desc:'Detailed notes on CMOS logic design, standard cell methodology, timing analysis, and layout techniques.',downloads:320,rating:4.3,uploadedBy:'Elex Crew',date:'2026-04-07',bookmarked:false,trending:false},
+  {id:'r8',title:'Software Engineering — Previous Year Questions',subject:'SE',branch:'ce',sem:'5',type:'Question Bank',desc:'10 years of university exam questions on SDLC, Agile, UML diagrams, testing, and project management.',downloads:1120,rating:4.6,uploadedBy:'StudyGroup A',date:'2026-04-06',bookmarked:false,trending:true},
+  {id:'r9',title:'Operating Systems — Complete Study Material',subject:'OS',branch:'ce',sem:'4',type:'Notes',desc:'Full OS notes covering process management, memory management, file systems, deadlocks, and scheduling algorithms.',downloads:700,rating:4.7,uploadedBy:'Apex Team',date:'2026-04-05',bookmarked:false,trending:false},
+  {id:'r10',title:'Digital Signal Processing Lab Experiments',subject:'DSP Lab',branch:'elex',sem:'5',type:'Lab Manual',desc:'MATLAB-based lab manual for DFT, FFT, FIR/IIR filter design with step-by-step code and result screenshots.',downloads:280,rating:4.2,uploadedBy:'Elex Crew',date:'2026-04-04',bookmarked:false,trending:false},
+];
+
+const TRENDING_SUBJECTS = [
+  {name:'Data Structures',branch:'CE',views:5420,icon:'🌲'},
+  {name:'Machine Learning',branch:'AI&DS',views:4800,icon:'🤖'},
+  {name:'DBMS',branch:'CE',views:4200,icon:'🗄️'},
+  {name:'Deep Learning',branch:'AI&DS',views:3900,icon:'🧠'},
+  {name:'Computer Networks',branch:'CE',views:3500,icon:'🌐'},
+  {name:'Thermodynamics',branch:'ME',views:2900,icon:'🔥'},
+  {name:'VLSI Design',branch:'ELEX',views:2400,icon:'⚡'},
+  {name:'Software Engineering',branch:'CE',views:2200,icon:'🛠️'},
+];
+
+const FORUM_SEED = [
+  {id:'f1',title:'Best resources for DBMS exam prep?',content:'Need recommendations for unit 5 specifically — normalization and transactions.',tag:'Question',branch:'ce',author:'Rahul S.',replies:12,upvotes:34,date:'2026-04-19'},
+  {id:'f2',title:'Sharing my complete DSA notes (free)',content:'I uploaded comprehensive hand-written DSA notes for sem 4 CE. Check Study Hub uploads.',tag:'Resource Share',branch:'ce',author:'Priya M.',replies:28,upvotes:87,date:'2026-04-18'},
+  {id:'f3',title:'Tips for ML lab viva preparation?',content:'Our viva is next week. What questions do professors usually ask for kNN and linear regression experiments?',tag:'Help Needed',branch:'aids',author:'Aisha K.',replies:9,upvotes:22,date:'2026-04-17'},
+  {id:'f4',title:'Recommended Python libraries for data science projects',content:'Apart from numpy and pandas, what should we know? Looking for internship-level skills.',tag:'Tips',branch:'aids',author:'Dev P.',replies:15,upvotes:41,date:'2026-04-16'},
+  {id:'f5',title:'Study group for CN unit tests — Pune',content:'Anyone interested in a group study session this weekend in Pune? DM me.',tag:'General',branch:'ce',author:'Rohan N.',replies:7,upvotes:18,date:'2026-04-15'},
+];
+
+/* ─── STATE ─── */
+let resources = JSON.parse(localStorage.getItem('sh_resources') || 'null') || SEED_RESOURCES;
+let forums = JSON.parse(localStorage.getItem('sh_forums') || 'null') || FORUM_SEED;
+let bookmarks = JSON.parse(localStorage.getItem('sh_bookmarks') || '[]');
+let activeBranchFilter = '';
+let activePage = 'dashboard';
+
+function saveResources(){ localStorage.setItem('sh_resources', JSON.stringify(resources)); }
+function saveForums(){ localStorage.setItem('sh_forums', JSON.stringify(forums)); }
+function saveBookmarks(){ localStorage.setItem('sh_bookmarks', JSON.stringify(bookmarks)); document.getElementById('cnt-bm').textContent=bookmarks.length; }
+
+function renderCurrentPage(){
+  if(activePage==='dashboard') renderAll();
+  else if(activePage==='browse') renderBrowse();
+  else if(activePage==='trending') renderTrending();
+  else if(activePage==='bookmarks') renderBookmarks();
+  else if(activePage==='forum') renderForum();
+}
+
+function toggleBookmark(id){
+  const r=resources.find(x=>x.id===id);
+  if(!r) return;
+  if(bookmarks.includes(id)){ bookmarks=bookmarks.filter(x=>x!==id); showToast('🔖 Removed from bookmarks'); }
+  else { bookmarks.push(id); showToast('🔖 Bookmarked!'); }
+  saveBookmarks(); renderCurrentPage();
+}
+
+/* ─── RESOURCE CARD ─── */
+function resourceCard(r){
+  const isBm = bookmarks.includes(r.id);
+  return `<div class="resource-card">
+    <div class="rc-header">
+      <span class="rc-type ${TYPE_CLASSES[r.type]||'type-notes'}">${TYPE_ICONS[r.type]||'📄'} ${r.type}</span>
+      <button class="rc-bm" onclick="toggleBookmark('${r.id}')" title="${isBm?'Remove bookmark':'Bookmark'}">${isBm?'🔖':'🤍'}</button>
+    </div>
+    <div class="rc-title">${r.title}</div>
+    <div class="rc-sub">${r.desc}</div>
+    <div class="rc-meta">
+      <span>📚 ${r.subject}</span>
+      <span>🏫 ${BRANCHES[r.branch]||r.branch}</span>
+      <span>📅 Sem ${r.sem}</span>
+    </div>
+    <div class="rc-footer">
+      <div class="rc-rating">⭐ ${r.rating} · ⬇ ${r.downloads.toLocaleString()}</div>
+      <button class="btn-dl" onclick="downloadRes('${r.id}')">Download</button>
+    </div>
+  </div>`;
+}
+
+function downloadRes(id){
+  const r=resources.find(x=>x.id===id);
+  if(r){ r.downloads++; saveResources(); showToast(`⬇️ Downloading "${r.title.substring(0,30)}..."`); renderCurrentPage(); }
+}
+
+/* ─── PAGES ─── */
+function showPage(name){
+  activePage = name;
+  ['dashboard','browse','trending','bookmarks','forum','upload'].forEach(p=>{
+    document.getElementById(`page-${p}`).style.display = p===name ? '' : 'none';
+    const nav = document.getElementById(`nav-${p}`);
+    if(nav) nav.classList.toggle('active', p===name);
+  });
+  if(name==='browse') renderBrowse();
+  if(name==='trending') renderTrending();
+  if(name==='bookmarks') renderBookmarks();
+  if(name==='forum') renderForum();
+}
+
+function filterBranch(branch){ activeBranchFilter=branch; showPage('browse'); document.getElementById('branchFilter').value=branch; renderBrowse(); }
+
+function renderAll(){
+  // DASHBOARD
+  document.getElementById('dashStats').innerHTML=`
+    <div class="stat-box"><div class="num">${resources.length}</div><div class="lbl">Resources</div></div>
+    <div class="stat-box"><div class="num">${bookmarks.length}</div><div class="lbl">Bookmarked</div></div>
+    <div class="stat-box"><div class="num">${resources.filter(r=>r.trending).length}</div><div class="lbl">Trending</div></div>
+    <div class="stat-box"><div class="num">${resources.filter(r=>r.uploadedBy===CURRENT_USER_NAME).length}</div><div class="lbl">My Uploads</div></div>`;
+  const recent = [...resources].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
+  document.getElementById('recentGrid').innerHTML = recent.map(resourceCard).join('');
+  // TRENDING subjects
+  document.getElementById('trendGrid').innerHTML = TRENDING_SUBJECTS.slice(0,8).map((ts,i)=>`
+    <div class="trend-card" onclick="filterBranch('')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <span style="font-size:1.6rem">${ts.icon}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:${i<3?'#f59e0b':'var(--light)'}">${i<3?'🏆':'#'}${i+1}</span>
+      </div>
+      <div style="margin-top:10px;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--ink)">${ts.name}</div>
+      <div style="font-size:.75rem;color:var(--muted);margin:2px 0">${ts.branch}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--light);margin-top:6px">👁 ${ts.views.toLocaleString()} views</div>
+    </div>`).join('');
+  document.getElementById('cnt-browse').textContent = resources.length;
+  document.getElementById('cnt-bm').textContent = bookmarks.length;
+}
+
+function renderBrowse(){
+  const q = (document.getElementById('browseSearch').value||'').toLowerCase();
+  const br = document.getElementById('branchFilter').value || activeBranchFilter;
+  const tp = document.getElementById('typeFilter').value;
+  const sm = document.getElementById('semFilter').value;
+  let filtered = resources.filter(r=>{
+    const mQ=!q||r.title.toLowerCase().includes(q)||r.subject.toLowerCase().includes(q)||r.desc.toLowerCase().includes(q);
+    const mB=!br||r.branch===br;
+    const mT=!tp||r.type===tp;
+    const mS=!sm||r.sem===sm;
+    return mQ&&mB&&mT&&mS;
+  });
+  const grid = document.getElementById('browseGrid');
+  grid.innerHTML = filtered.length ? filtered.map(resourceCard).join('') : `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-title">No resources found</div></div>`;
+}
+
+function renderTrending(){
+  document.getElementById('trendFullGrid').innerHTML = TRENDING_SUBJECTS.map((ts,i)=>`
+    <div class="trend-card" onclick="filterBranch('')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <span style="font-size:1.6rem">${ts.icon}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:${i<3?'#f59e0b':'var(--light)'}">${i<3?'🏆':'#'}${i+1}</span>
+      </div>
+      <div style="margin-top:10px;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--ink)">${ts.name}</div>
+      <div style="font-size:.75rem;color:var(--muted);margin:2px 0">${ts.branch}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--light);margin-top:6px">👁 ${ts.views.toLocaleString()} views</div>
+    </div>`).join('');
+  const topRes = [...resources].sort((a,b)=>b.downloads-a.downloads).slice(0,6);
+  document.getElementById('trendTopGrid').innerHTML = topRes.map(resourceCard).join('');
+}
+
+function renderBookmarks(){
+  const bms = resources.filter(r=>bookmarks.includes(r.id));
+  document.getElementById('bmGrid').innerHTML = bms.length ? bms.map(resourceCard).join('') : `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔖</div><div class="empty-title">No bookmarks yet</div><div style="font-size:.85rem;color:var(--muted);margin-top:4px">Tap the 🤍 on any resource to bookmark it.</div></div>`;
+}
+
+function renderForum(){
+  document.getElementById('forumList').innerHTML = forums.map(f=>`
+    <div class="forum-card">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="forum-tag">${f.tag}</span>
+        ${f.branch?`<span style="font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted)">${BRANCHES[f.branch]||f.branch}</span>`:''}
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:6px">${f.title}</div>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:12px">${f.content}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--light)">
+        <span>👤 ${f.author} &nbsp;·&nbsp; 📅 ${f.date}</span>
+        <div style="display:flex;gap:14px">
+          <span>💬 ${f.replies} replies</span>
+          <span>👍 ${f.upvotes}</span>
+          <button style="background:none;border:none;cursor:pointer;color:var(--accent);font-family:'DM Mono',monospace;font-size:.6rem" onclick="upvote('${f.id}')">▲ Upvote</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function upvote(id){ const f=forums.find(x=>x.id===id); if(f){f.upvotes++;saveForums();renderForum();} }
+function openForumPost(){ document.getElementById('forumPostForm').style.display=''; }
+function submitForumPost(){
+  const title=document.getElementById('forumTitle').value.trim();
+  const content=document.getElementById('forumContent').value.trim();
+  if(!title||!content){showToast('⚠️ Please fill title and content');return;}
+  forums.unshift({id:'f'+Date.now(),title,content,tag:document.getElementById('forumTag').value,branch:document.getElementById('forumBranch').value,author:CURRENT_USER_NAME,replies:0,upvotes:0,date:new Date().toISOString().split('T')[0]});
+  saveForums(); document.getElementById('forumPostForm').style.display='none';
+  document.getElementById('forumTitle').value=''; document.getElementById('forumContent').value='';
+  showToast('✅ Post published!'); renderForum();
+}
+
+function handleFileSelect(e){ const f=e.target.files[0]; if(f){document.getElementById('fileDisplay').style.display='';document.getElementById('fileName').textContent=f.name;} }
+
+function uploadResource(){
+  const title=document.getElementById('upTitle').value.trim();
+  const subject=document.getElementById('upSubject').value.trim();
+  const branch=document.getElementById('upBranch').value;
+  const sem=document.getElementById('upSem').value;
+  const type=document.getElementById('upType').value;
+  const desc=document.getElementById('upDesc').value.trim()||'User-uploaded resource.';
+  if(!title||!subject||!branch||!sem){showToast('⚠️ Please fill all required fields');return;}
+  const r={id:'r'+Date.now(),title,subject,branch,sem,type,desc,downloads:0,rating:0,uploadedBy:CURRENT_USER_NAME,date:new Date().toISOString().split('T')[0],bookmarked:false,trending:false};
+  resources.unshift(r); saveResources();
+  ['upTitle','upSubject','upDesc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('upBranch').value=''; document.getElementById('upSem').value='';
+  document.getElementById('fileDisplay').style.display='none'; document.getElementById('fileName').textContent='';
+  showToast('🎉 Resource uploaded successfully!'); renderAll(); showPage('dashboard');
+}
+
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
+async function logout(){ await fetch('/api/auth/logout',{method:'POST',credentials:'include'}); window.location.href='/login'; }
+
+/* INIT */
+renderAll();
+</script>
+</body>
+</html>

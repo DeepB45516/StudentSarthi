@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Student Sarthi - Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0a0f;
+  --paper:#f5f3ee;
+  --warm:#ede9e0;
+  --card:#fff;
+  --border:#d6d0c4;
+  --accent:#ff5c00;
+  --blue:#1a56db;
+  --green:#059669;
+  --text:#1c1917;
+  --muted:#78716c;
+  --light:#a8a29e;
+}
+html{min-height:100%;scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--ink);
+  color:var(--text);
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  overflow-x:hidden;
+  overflow-y:auto;
+  position:relative;
+}
+
+/* ── animated background ── */
+.bg-grid{
+  position:fixed;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,92,0,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,92,0,.05) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation:gridScroll 20s linear infinite;
+}
+@keyframes gridScroll{from{background-position:0 0}to{background-position:60px 60px}}
+
+.bg-glow{
+  position:fixed;inset:0;z-index:0;
+  background:radial-gradient(ellipse 80% 80% at 20% 50%, rgba(255,92,0,.08) 0%, transparent 60%),
+             radial-gradient(ellipse 60% 60% at 80% 20%, rgba(26,86,219,.07) 0%, transparent 60%);
+}
+
+/* ── split layout ── */
+.split{
+  display:flex;width:100%;min-height:100vh;min-height:100dvh;position:relative;z-index:1;
+}
+
+/* ── left panel — branding ── */
+.brand-panel{
+
+  flex:1;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:60px 64px;
+  border-right:1px solid rgba(255,255,255,.06);
+}
+.brand-logo{
+  font-family:'DM Mono',monospace;
+  font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:48px;
+  display:flex;align-items:center;gap:10px;
+}
+.brand-logo::before{content:'';width:20px;height:2px;background:var(--accent)}
+
+.brand-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.4rem,4vw,3.8rem);
+  font-weight:800;line-height:1.0;letter-spacing:-.03em;
+  color:#f5f3ee;
+  margin-bottom:20px;
+}
+.brand-title em{font-style:normal;color:var(--accent)}
+
+.brand-desc{
+  font-size:1rem;color:rgba(245,243,238,.5);
+  line-height:1.7;max-width:400px;margin-bottom:48px;
+}
+
+.features{display:flex;flex-direction:column;gap:16px}
+.feature{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px 20px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;
+  background:rgba(255,255,255,.03);
+  transition:all .2s;
+}
+.feature:hover{background:rgba(255,255,255,.06);border-color:rgba(255,92,0,.3)}
+.feat-icon{
+  font-size:1.3rem;
+  width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,92,0,.12);border-radius:8px;
+  flex-shrink:0;
+}
+.feat-text h4{font-size:.85rem;font-weight:600;color:#f5f3ee;margin-bottom:3px}
+.feat-text p{font-size:.78rem;color:rgba(245,243,238,.4);line-height:1.5}
+
+.brand-stats{
+  display:flex;gap:32px;margin-top:48px;
+  padding-top:32px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.stat .num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)}
+.stat .label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,243,238,.35)}
+
+/* ── right panel — auth ── */
+.auth-panel{
+  width:440px;
+  flex-shrink:0;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:60px 48px;
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(20px);
+  border-left:1px solid rgba(255,255,255,.06);
+  overflow-y:auto;
+}
+
+.auth-header{margin-bottom:36px}
+.auth-eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:12px;
+}
+.auth-title{
+  font-family:'Syne',sans-serif;
+  font-size:1.8rem;font-weight:800;
+  color:#f5f3ee;line-height:1.1;
+  margin-bottom:8px;
+}
+.auth-sub{font-size:.88rem;color:rgba(245,243,238,.45)}
+
+/* ── tabs ── */
+.tabs{
+  display:flex;gap:0;
+  background:rgba(255,255,255,.06);
+  border-radius:8px;padding:4px;
+  margin-bottom:28px;
+}
+.tab{
+  flex:1;padding:9px;
+  font-family:'DM Mono',monospace;font-size:.7rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;border:none;
+  color:rgba(245,243,238,.4);
+  cursor:pointer;border-radius:6px;
+  transition:all .2s;
+}
+.tab.active{
+  background:var(--accent);color:#fff;
+  font-weight:500;
+}
+
+/* ── form ── */
+.form-group{margin-bottom:18px}
+.form-label{
+  display:block;
+  font-family:'DM Mono',monospace;font-size:.65rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(245,243,238,.4);
+  margin-bottom:8px;
+}
+.form-input{
+  width:100%;padding:12px 16px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:.95rem;
+  color:#f5f3ee;outline:none;
+  transition:all .2s;
+}
+.form-input::placeholder{color:rgba(245,243,238,.2)}
+.form-input:focus{
+  border-color:var(--accent);
+  background:rgba(255,92,0,.06);
+  box-shadow:0 0 0 3px rgba(255,92,0,.12);
+}
+
+.btn-auth{
+  width:100%;padding:13px;
+  background:var(--accent);color:#fff;
+  border:none;border-radius:8px;
+  font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
+  cursor:pointer;transition:all .22s;
+  margin-top:6px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-auth:hover:not(:disabled){
+  background:#e05000;transform:translateY(-1px);
+  box-shadow:0 8px 24px rgba(255,92,0,.35);
+}
+.btn-auth:disabled{opacity:.5;cursor:not-allowed}
+.btn-auth .spinner{
+  width:18px;height:18px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:none;
+}
+.btn-auth.loading .btn-text{display:none}
+.btn-auth.loading .spinner{display:block}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── error/success toast ── */
+.toast{
+  padding:12px 16px;border-radius:8px;
+  font-size:.85rem;margin-bottom:16px;
+  display:none;align-items:center;gap:10px;
+  animation:slideIn .2s ease;
+}
+.toast.show{display:flex}
+.toast.error{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.25);color:#fca5a5}
+.toast.success{background:rgba(5,150,105,.12);border:1px solid rgba(5,150,105,.25);color:#6ee7b7}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+.divider{
+  text-align:center;
+  font-family:'DM Mono',monospace;font-size:.65rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(245,243,238,.2);
+  margin:20px 0;
+  position:relative;
+}
+.divider::before,.divider::after{
+  content:'';position:absolute;top:50%;
+  width:calc(50% - 30px);height:1px;
+  background:rgba(255,255,255,.08);
+}
+.divider::before{left:0}
+.divider::after{right:0}
+
+.btn-google{
+  width:100%;padding:12px 14px;
+  background:rgba(255,255,255,.96);color:#1f2937;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:.94rem;font-weight:700;
+  cursor:pointer;transition:all .22s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-google:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+}
+.btn-google[data-disabled="true"]{
+  opacity:.58;
+  cursor:not-allowed;
+}
+.btn-google[data-disabled="true"]:hover{
+  transform:none;
+  box-shadow:none;
+}
+.google-mark{
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:Arial,sans-serif;font-weight:700;
+  color:#4285f4;background:#fff;
+  border:1px solid #e5e7eb;
+}
+
+.auth-footer{
+  margin-top:24px;text-align:center;
+  font-size:.8rem;color:rgba(245,243,238,.3);
+  font-family:'DM Mono',monospace;letter-spacing:.04em;
+}
+
+/* ── mobile ── */
+@media(max-width:900px){
+  .brand-panel{display:none}
+  .auth-panel{width:100%;border-left:none;padding:40px 24px}
+}
+@media(max-height:760px){
+  .brand-panel,.auth-panel{justify-content:flex-start;padding-top:36px;padding-bottom:36px}
+}
+@media(max-width:420px){
+  .tabs{flex-direction:column}
+  .auth-title{font-size:1.55rem}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="split">
+  <!-- LEFT: Branding -->
+  <div class="brand-panel">
+    <div class="brand-logo">Student Sarthi</div>
+
+    <h1 class="brand-title">Your <em>AI-powered</em><br>academic edge.</h1>
+    <p class="brand-desc">From finding the right opportunity to building your resume and analyzing documents — everything your academic career needs, powered by state-of-the-art AI.</p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-text">
+          <h4>Opportunity Finder</h4>
+          <p>AI agents search hackathons, internships, scholarships & more — tailored to your profile</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feat-icon">📄</div>
+        <div class="feat-text">
+          <h4>DocuGenius AI</h4>
+          <p>Paste any document — get summaries, key points, MCQs, and deep insights instantly</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feat-icon">📊</div>
+        <div class="feat-text">
+          <h4>Skill Verifier + Resume</h4>
+          <p>Test your domain proficiency and generate a polished PDF resume in seconds</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feat-icon">🤖</div>
+        <div class="feat-text">
+          <h4>AI Daily Newsletter</h4>
+          <p>Stay ahead with Gemini-curated AI news delivered to your inbox every day</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-stats">
+      <div class="stat"><div class="num">3</div><div class="label">AI Agents</div></div>
+      <div class="stat"><div class="num">5+</div><div class="label">Features</div></div>
+      <div class="stat"><div class="num">100%</div><div class="label">Free APIs</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Auth -->
+  <div class="auth-panel">
+    <div class="auth-header">
+      <div class="auth-eyebrow">Get Started</div>
+      <h2 class="auth-title" id="authTitle">Welcome back</h2>
+      <p class="auth-sub" id="authSub">Sign in to access your dashboard</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+      <button class="tab" id="tabRegister" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+      <span id="toastIcon">⚠</span>
+      <span id="toastMsg"></span>
+    </div>
+
+    <button class="btn-google" type="button" onclick="continueWithGoogle()" data-disabled="{{ 'false' if google_enabled else 'true' }}">
+      <span class="google-mark">G</span>
+      <span>Continue with Google</span>
+    </button>
+
+    <div class="divider">or</div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <button class="btn-auth" id="loginBtn" onclick="doLogin()">
+        <span class="btn-text">Sign In →</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+
+    <!-- Register Form -->
+    <div id="registerForm" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" type="text" id="regName" placeholder="Your name" autocomplete="name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="regEmail" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password (min 6 chars)</label>
+        <input class="form-input" type="password" id="regPassword" placeholder="Choose a strong password" autocomplete="new-password"/>
+      </div>
+      <button class="btn-auth" id="registerBtn" onclick="doRegister()">
+        <span class="btn-text">Create Account →</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+
+    <div class="auth-footer">
+      Student Sarthi
+    </div>
+  </div>
+</div>
+
+<script>
+const googleEnabled = {{ google_enabled|tojson }};
+
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tabLogin').className = 'tab' + (isLogin ? ' active' : '');
+  document.getElementById('tabRegister').className = 'tab' + (!isLogin ? ' active' : '');
+  document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = !isLogin ? 'block' : 'none';
+  document.getElementById('authTitle').textContent = isLogin ? 'Welcome back' : 'Create account';
+  document.getElementById('authSub').textContent = isLogin ? 'Sign in to access your dashboard' : 'Join thousands of students';
+  hideToast();
+}
+
+function showToast(msg, type='error') {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toastIcon');
+  const msgEl = document.getElementById('toastMsg');
+  t.className = 'toast show ' + type;
+  icon.textContent = type === 'error' ? '⚠' : '✓';
+  msgEl.textContent = msg;
+}
+
+function hideToast() {
+  document.getElementById('toast').className = 'toast';
+}
+
+function continueWithGoogle() {
+  if (!googleEnabled) {
+    showToast('Google sign-in is not configured yet.');
+    return;
+  }
+  window.location.href = '/auth/google';
+}
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  btn.className = 'btn-auth' + (loading ? ' loading' : '');
+  btn.disabled = loading;
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showToast('Please fill in all fields'); return; }
+  setLoading('loginBtn', true); hideToast();
+  try {
+    const res = await fetch('/api/auth/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, password}), credentials:'include'
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Welcome back, ' + data.name + '!', 'success');
+      setTimeout(() => { window.location.href = '/dashboard'; }, 600);
+    } else {
+      showToast(data.error || 'Login failed');
+    }
+  } catch(e) {
+    showToast('Connection error. Please try again.');
+  }
+  setLoading('loginBtn', false);
+}
+
+async function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  if (!name || !email || !password) { showToast('Please fill in all fields'); return; }
+  setLoading('registerBtn', true); hideToast();
+  try {
+    const res = await fetch('/api/auth/register', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name, email, password}), credentials:'include'
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Account created! Taking you to your dashboard…', 'success');
+      setTimeout(() => { window.location.href = '/dashboard'; }, 800);
+    } else {
+      showToast(data.error || 'Registration failed');
+    }
+  } catch(e) {
+    showToast('Connection error. Please try again.');
+  }
+  setLoading('registerBtn', false);
+}
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const isLogin = document.getElementById('loginForm').style.display !== 'none';
+    if (isLogin) doLogin(); else doRegister();
+  }
+});
+
+const authError = new URLSearchParams(window.location.search).get('auth_error');
+if (authError) {
+  showToast(authError);
+  window.history.replaceState({}, document.title, '/login');
+}
+</script>
+</body>
+</html>

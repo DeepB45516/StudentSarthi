@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Portfolio Studio - Student Sarthi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,wght@0,700;1,700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d0d12;
+  --paper:#f5f3ef;
+  --panel:#ffffff;
+  --line:#e2ddd6;
+  --muted:#74706a;
+  --accent:#e63946;
+  --accent-soft:rgba(230,57,70,.1);
+  --shadow:0 2px 16px rgba(0,0,0,.06),0 8px 32px rgba(0,0,0,.04);
+  --radius:10px;
+  --topbar-h:60px;
+}
+html{scroll-behavior:smooth;height:100%}
+body{
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  min-height:100%;
+  overflow-x:hidden;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* ─── TOPBAR ─────────────────────────────────── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--topbar-h);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 20px;
+  background:rgba(245,243,239,.95);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px);
+}
+.brand{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.01em;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;
+}
+.brand-dot{color:var(--accent)}
+.topbar-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn{
+  height:34px;padding:0 14px;border-radius:7px;border:1px solid var(--line);
+  background:#fff;color:var(--ink);
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.8rem;font-weight:600;letter-spacing:.01em;
+  transition:all .15s ease;white-space:nowrap;
+}
+.btn:hover{border-color:#bbb;background:#fafafa;transform:translateY(-1px)}
+.btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn-primary:hover{background:#1e1e2e;border-color:#1e1e2e}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-accent:hover{background:#c1121f;border-color:#c1121f}
+
+/* ─── LAYOUT ─────────────────────────────────── */
+.layout{
+  display:grid;
+  grid-template-columns:340px 1fr;
+  grid-template-rows:auto;
+  height:calc(100vh - var(--topbar-h));
+  margin-top:var(--topbar-h);
+  overflow:hidden;
+}
+.sidebar{
+  background:#fff;
+  border-right:1px solid var(--line);
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:#d0cac2 transparent;
+  height:100%;
+}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:#d0cac2;border-radius:4px}
+
+.preview-area{
+  background:#e8e3db;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  overflow:hidden;
+}
+.preview-bar{
+  padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:#f0ece6;
+  border-bottom:1px solid #d8d2c8;
+  flex-shrink:0;
+}
+.preview-bar-left{display:flex;align-items:center;gap:10px}
+.preview-label{font-family:'DM Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.active-theme-badge{
+  padding:3px 8px;border-radius:4px;background:var(--ink);color:#fff;
+  font-size:.7rem;font-weight:600;letter-spacing:.04em;
+}
+.preview-frame{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  background:#fff;
+}
+
+/* ─── SIDEBAR TABS ───────────────────────────── */
+.sidebar-tabs{
+  display:flex;border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:10;background:#fff;
+}
+.sidebar-tab{
+  flex:1;padding:10px 4px;text-align:center;
+  font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--muted);border:none;background:none;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+}
+.sidebar-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.sidebar-tab:hover:not(.active){color:var(--ink)}
+
+.tab-panel{display:none;padding:16px}
+.tab-panel.active{display:block}
+
+/* ─── SECTION TITLES ────────────────────────── */
+.sec-title{
+  font-family:'DM Mono',monospace;font-size:.65rem;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--line)}
+.sidebar-section{margin-bottom:20px}
+
+/* ─── THEME GRID ─────────────────────────────── */
+.theme-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
+.theme-btn{
+  border:2px solid var(--line);border-radius:8px;
+  background:#fff;padding:6px 4px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  transition:all .15s;
+}
+.theme-btn:hover{border-color:#999;transform:translateY(-1px)}
+.theme-btn.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.theme-swatch{height:20px;width:100%;border-radius:5px}
+.theme-name{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+
+/* ─── CUSTOMIZATION CONTROLS ─────────────────── */
+.ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.ctrl-row.triple{grid-template-columns:1fr 1fr 1fr}
+.ctrl-item{display:flex;flex-direction:column;gap:4px}
+.ctrl-label{font-size:.68rem;font-weight:700;color:#5a5550;letter-spacing:.02em}
+.ctrl-select,.ctrl-input{
+  width:100%;border:1px solid #ddd8d0;border-radius:6px;
+  background:#fbfaf8;padding:6px 8px;color:var(--ink);
+  font-size:.8rem;outline:none;
+  transition:border-color .15s;
+}
+.ctrl-select:focus,.ctrl-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.range-with-value{display:flex;align-items:center;gap:8px}
+.range-with-value input[type=range]{flex:1;accent-color:var(--accent)}
+.range-val{font-size:.72rem;font-weight:700;color:var(--muted);min-width:28px;text-align:right}
+.color-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.color-item{display:flex;flex-direction:column;gap:4px}
+.color-picker-wrap{display:flex;align-items:center;gap:6px;background:#fbfaf8;border:1px solid #ddd8d0;border-radius:6px;padding:4px 8px}
+.color-picker-wrap input[type=color]{width:24px;height:24px;border:none;background:none;cursor:pointer;border-radius:3px;padding:0}
+.color-picker-wrap span{font-size:.75rem;font-weight:600;color:var(--muted);font-family:'DM Mono',monospace}
+
+/* ─── FORM FIELDS ────────────────────────────── */
+.field{margin-bottom:10px}
+.field label{
+  display:block;font-size:.72rem;font-weight:700;color:#5a5550;
+  margin-bottom:5px;letter-spacing:.01em;
+}
+.field input,.field textarea{
+  width:100%;border:1px solid #ddd8d0;border-radius:7px;
+  background:#fbfaf8;padding:8px 10px;color:var(--ink);outline:none;
+  transition:border-color .15s,box-shadow .15s;font-size:.85rem;
+}
+.field textarea{min-height:70px;resize:vertical;line-height:1.5}
+.field input:focus,.field textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 2px var(--accent-soft);
+  background:#fff;
+}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.upload-box{
+  border:1.5px dashed #ccc6bc;border-radius:8px;padding:10px;
+  background:#fbfaf8;display:flex;flex-direction:column;gap:6px;
+  cursor:pointer;transition:border-color .15s;
+}
+.upload-box:hover{border-color:var(--accent)}
+.upload-box strong{font-size:.75rem;font-weight:700}
+.upload-box input{font-size:.74rem;max-width:100%}
+.file-name{font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-row{
+  border:1px solid #ece7de;border-radius:8px;padding:10px;
+  background:#fbfaf8;margin-bottom:8px;
+}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
+
+/* ─── STATUS ─────────────────────────────────── */
+.status-line{
+  padding:8px 16px 0;font-size:.75rem;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0}
+
+/* ─── TOAST ──────────────────────────────────── */
+.toast{
+  position:fixed;right:20px;bottom:24px;z-index:9999;
+  padding:11px 16px;border-radius:8px;background:#111;color:#fff;
+  box-shadow:0 12px 32px rgba(0,0,0,.24);font-size:.84rem;
+  opacity:0;transform:translateY(8px);pointer-events:none;
+  transition:opacity .18s,transform .18s;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ─── SEPARATOR ──────────────────────────────── */
+.sep{height:1px;background:var(--line);margin:14px 0}
+
+/* ─── GENERATED PORTFOLIO STYLES ─────────────── */
+.pf-site{min-height:100%;word-break:break-word}
+.pf-wrap{width:min(1160px,100%);margin:0 auto;padding:0 28px}
+
+/* Nav */
+.pf-nav{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:24px 0}
+.pf-logo{font-weight:800;font-size:1.05rem;overflow-wrap:anywhere}
+.pf-links{display:flex;gap:14px;flex-wrap:wrap;font-size:.87rem;justify-content:flex-end}
+.pf-links a{font-weight:600;opacity:.7;transition:opacity .15s}
+.pf-links a:hover{opacity:1}
+
+/* Hero */
+.pf-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,380px);gap:48px;align-items:center;padding:52px 0 64px}
+.pf-kicker{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;opacity:.6}
+.pf-title{font-size:clamp(2.4rem,5vw,4rem);line-height:.97;font-weight:800;letter-spacing:-.02em;margin-bottom:18px}
+.pf-title span{display:block}
+.pf-copy{font-size:.97rem;line-height:1.72;max-width:600px;opacity:.7;margin-bottom:8px}
+.pf-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.pf-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:11px 20px;border-radius:999px;
+  font-weight:700;font-size:.88rem;border:1.5px solid currentColor;
+  transition:all .18s ease;
+}
+.pf-btn:hover{opacity:.85;transform:translateY(-1px)}
+.pf-visual{display:flex;align-items:center;min-width:0}
+.pf-photo{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+.pf-photo-fallback{
+  width:100%;aspect-ratio:4/5;
+  display:grid;place-items:center;
+  font-size:3.5rem;font-weight:800;
+}
+
+/* Strip */
+.pf-strip{
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  justify-content:center;padding:14px 0;
+  font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;
+}
+.pf-strip-sep{opacity:.3}
+
+/* Sections */
+.pf-section{padding:56px 0;border-top:1px solid rgba(0,0,0,.08)}
+.pf-section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:24px}
+.pf-section h2{font-size:1.8rem;font-weight:800;letter-spacing:-.02em}
+.pf-section-num{font-family:'DM Mono',monospace;font-size:.72rem;color:inherit;opacity:.4;font-weight:500}
+
+/* Cards */
+.pf-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.pf-card{border-radius:10px;padding:20px;border:1px solid rgba(0,0,0,.1)}
+.pf-card h3{font-size:.97rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+.pf-card p{opacity:.7;line-height:1.62;font-size:.9rem}
+.pf-card a{font-weight:700;text-underline-offset:3px;text-decoration:underline;opacity:.8}
+.pf-card a:hover{opacity:1}
+
+/* Skills */
+.pf-skills{display:flex;flex-wrap:wrap;gap:8px}
+.pf-skill{border:1.5px solid rgba(0,0,0,.14);border-radius:999px;padding:7px 13px;font-weight:700;font-size:.82rem}
+
+/* Contact */
+.pf-contact-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:start}
+.pf-contact-line{display:block;margin-bottom:9px;font-weight:700;opacity:.8;transition:opacity .15s}
+.pf-contact-line:hover{opacity:1}
+.pf-social{display:flex;flex-direction:column;gap:10px}
+.pf-social a{font-weight:700;opacity:.7;transition:opacity .15s}
+.pf-social a:hover{opacity:1}
+
+/* Footer */
+.pf-footer{padding:24px 0;opacity:.4;font-size:.82rem;font-weight:500}
+
+/* ─── THEME: GLOW ────── */
+.theme-glow{background:#f7fff0;color:#0a0f05}
+.theme-glow .pf-kicker{color:#2d8000}
+.theme-glow .pf-title em{font-family:'Playfair Display',serif;font-style:italic}
+.theme-glow .pf-photo,.theme-glow .pf-photo-fallback{border-radius:12px;background:radial-gradient(circle at 40% 40%,#c6ff5a,#f4ffd9 75%);box-shadow:0 0 80px rgba(130,242,31,.55)}
+.theme-glow .pf-btn:first-child{background:#0a0f05;color:#c6ff5a;border-color:#0a0f05}
+.theme-glow .pf-strip{background:#0d1a05;color:#b4ff33}
+.theme-glow .pf-card{background:rgba(255,255,255,.6);backdrop-filter:blur(8px)}
+
+/* ─── THEME: MONO ─────── */
+.theme-mono{background:#dddcda;color:#111}
+.theme-mono .pf-nav{border-bottom:1.5px solid #111}
+.theme-mono .pf-photo,.theme-mono .pf-photo-fallback{background:#111;color:#fff;border-radius:0}
+.theme-mono .pf-btn:first-child{background:#111;color:#fff;border-color:#111}
+.theme-mono .pf-strip{background:#111;color:#fff}
+.theme-mono .pf-card{background:rgba(255,255,255,.5)}
+
+/* ─── THEME: CLASSIC ───── */
+.theme-classic{background:#fffbf8;color:#0c1f3f}
+.theme-classic .pf-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem)}
+.theme-classic .pf-kicker{color:#d62828}
+.theme-classic .pf-photo,.theme-classic .pf-photo-fallback{border-radius:8px;background:#eaf0f7;color:#0c1f3f}
+.theme-classic .pf-btn:first-child{background:#d62828;color:#fff;border-color:#d62828;border-radius:7px}
+.theme-classic .pf-btn{border-radius:7px}
+.theme-classic .pf-card{background:#f4f8fc}
+
+/* ─── THEME: PURPLE ────── */
+.theme-purple{background:#f0eeff;color:#1a1535}
+.theme-purple .pf-title mark{background:none;color:#6d28d9}
+.theme-purple .pf-photo,.theme-purple .pf-photo-fallback{border-radius:12px;background:linear-gradient(135deg,#ddd6fe,#6d28d9 120%);color:#fff}
+.theme-purple .pf-btn:first-child{background:#6d28d9;color:#fff;border-color:#6d28d9;border-radius:8px}
+.theme-purple .pf-btn{border-radius:8px}
+.theme-purple .pf-card{background:rgba(255,255,255,.75);border-color:#e0d9f9}
+.theme-purple .pf-strip{background:#1a1535;color:#c4b5fd}
+
+/* ─── THEME: BOLD ─────── */
+.theme-bold{background:#f0fbfc;color:#0d1a1a}
+.theme-bold .pf-title{text-transform:uppercase;font-size:clamp(2.4rem,6vw,4.5rem)}
+.theme-bold .pf-kicker{color:#ef4444}
+.theme-bold .pf-photo,.theme-bold .pf-photo-fallback{background:#0d1a1a;color:#ef4444;border-radius:0}
+.theme-bold .pf-btn:first-child{background:#ef4444;color:#fff;border-color:#ef4444}
+.theme-bold .pf-strip{background:#fff;border-top:1px solid #e0e0e0;border-bottom:1px solid #e0e0e0}
+.theme-bold .pf-card:first-child{background:#0d1a1a;color:#fff}
+.theme-bold .pf-card:first-child p{opacity:.75}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media(max-width:1100px){
+  .layout{grid-template-columns:300px 1fr}
+}
+@media(max-width:900px){
+  .layout{
+    grid-template-columns:1fr;
+    grid-template-rows:auto 1fr;
+    height:auto;
+    overflow:visible;
+    min-height:calc(100vh - var(--topbar-h));
+  }
+  .sidebar{height:auto;overflow:visible;max-height:none}
+  .preview-area{height:auto;min-height:60vh}
+  .preview-frame{flex:none;min-height:500px;max-height:80vh}
+}
+@media(max-width:700px){
+  .topbar{padding:0 12px}
+  .brand-text{display:none}
+  .topbar-actions{gap:5px}
+  .btn{padding:0 10px;font-size:.75rem}
+  .pf-wrap{padding:0 16px}
+  .pf-nav{flex-direction:column;align-items:flex-start;gap:10px}
+  .pf-links{justify-content:flex-start}
+  .pf-hero{grid-template-columns:1fr;gap:24px;padding:32px 0 40px}
+  .pf-grid,.pf-contact-grid,.two,.upload-grid,.mini-grid,.ctrl-row,.ctrl-row.triple,.color-row{grid-template-columns:1fr}
+  .theme-grid{grid-template-columns:repeat(5,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand">Student<span class="brand-dot">·</span><span class="brand-text">Sarthi</span></div>
+  <div class="topbar-actions">
+    <a class="btn" href="/dashboard">← Back</a>
+    <button class="btn" onclick="loadDraft()">Load</button>
+    <button class="btn btn-primary" onclick="saveDraft()">Save</button>
+    <button class="btn" onclick="openSite()">Preview</button>
+    <button class="btn btn-accent" onclick="downloadSite()">Export</button>
+  </div>
+</header>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="status-line">
+      <span class="status-dot"></span>
+      <span id="status">Ready — Signed in as {{ user.email }}</span>
+    </div>
+
+    <div class="sidebar-tabs">
+      <button class="sidebar-tab active" onclick="showTab('theme',this)">Theme</button>
+      <button class="sidebar-tab" onclick="showTab('profile',this)">Profile</button>
+      <button class="sidebar-tab" onclick="showTab('style',this)">Style</button>
+      <button class="sidebar-tab" onclick="showTab('content',this)">Content</button>
+    </div>
+
+    <!-- TAB: THEME -->
+    <div class="tab-panel active" id="tab-theme">
+      <div class="sidebar-section">
+        <div class="sec-title">Choose Theme</div>
+        <div class="theme-grid" id="themeGrid">
+          <button class="theme-btn active" data-theme="glow">
+            <span class="theme-swatch" style="background:linear-gradient(90deg,#f4ffe0,#8cf018,#0d1a05)"></span>
+            <span class="theme-name">Glow</span>
+          </button>
+          <button class="theme-btn" data-theme="mono">
+            <span class="theme-swatch" style="background:linear-gradient(90deg,#dddcda,#888,#111)"></span>
+            <span class="theme-name">Mono</span>
+          </button>
+          <button class="theme-btn" data-theme="classic">
+            <span class="theme-swatch" style="background:linear-gradient(90deg,#fffbf8,#0c1f3f,#d62828)"></span>
+            <span class="theme-name">Classic</span>
+          </button>
+          <button class="theme-btn" data-theme="purple">
+            <span class="theme-swatch" style="background:linear-gradient(90deg,#f0eeff,#6d28d9,#1a1535)"></span>
+            <span class="theme-name">Purple</span>
+          </button>
+          <button class="theme-btn" data-theme="bold">
+            <span class="theme-swatch" style="background:linear-gradient(90deg,#f0fbfc,#ef4444,#0d1a1a)"></span>
+            <span class="theme-name">Bold</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: PROFILE -->
+    <div class="tab-panel" id="tab-profile">
+      <div class="sidebar-section">
+        <div class="sec-title">Photo &amp; Resume</div>
+        <div class="upload-grid">
+          <label class="upload-box">
+            <strong>📷 Photo</strong>
+            <input type="file" accept="image/*" onchange="readUpload(event,'photo','photoName',3)"/>
+            <span class="file-name" id="photoName">No photo</span>
+          </label>
+          <label class="upload-box">
+            <strong>📄 Resume</strong>
+            <input type="file" accept=".pdf,.doc,.docx" onchange="readUpload(event,'resume','resumeName',5)"/>
+            <span class="file-name" id="resumeName">No file</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Identity</div>
+        <div class="field"><label>Full Name</label><input id="name" placeholder="Your Name" oninput="sync()"/></div>
+        <div class="field"><label>Role / Title</label><input id="role" placeholder="Product Designer" oninput="sync()"/></div>
+        <div class="field"><label>Tagline</label><input id="headline" placeholder="One compelling line about you" oninput="sync()"/></div>
+        <div class="field"><label>Bio</label><textarea id="bio" placeholder="A few sentences about your background, skills, and goals." oninput="sync()"></textarea></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Contact</div>
+        <div class="two">
+          <div class="field"><label>Email</label><input id="email" placeholder="you@email.com" oninput="sync()"/></div>
+          <div class="field"><label>Phone</label><input id="phone" placeholder="+91 ..." oninput="sync()"/></div>
+        </div>
+        <div class="field"><label>Location</label><input id="location" placeholder="City, Country" oninput="sync()"/></div>
+        <div class="two">
+          <div class="field"><label>LinkedIn</label><input id="linkedin" placeholder="linkedin.com/in/..." oninput="sync()"/></div>
+          <div class="field"><label>GitHub</label><input id="github" placeholder="github.com/..." oninput="sync()"/></div>
+        </div>
+        <div class="field"><label>Website</label><input id="website" placeholder="yoursite.com" oninput="sync()"/></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Navigation Links</div>
+        <div class="card-row">
+          <div class="two">
+            <div class="field"><label>Label 1</label><input id="nav1Label" placeholder="Work" oninput="sync()"/></div>
+            <div class="field"><label>URL 1</label><input id="nav1Url" placeholder="#work" oninput="sync()"/></div>
+          </div>
+          <div class="two">
+            <div class="field"><label>Label 2</label><input id="nav2Label" placeholder="About" oninput="sync()"/></div>
+            <div class="field"><label>URL 2</label><input id="nav2Url" placeholder="#skills" oninput="sync()"/></div>
+          </div>
+          <div class="two">
+            <div class="field"><label>Label 3</label><input id="nav3Label" placeholder="Blog" oninput="sync()"/></div>
+            <div class="field"><label>URL 3</label><input id="nav3Url" placeholder="https://..." oninput="sync()"/></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: STYLE (font, size, border, colors) -->
+    <div class="tab-panel" id="tab-style">
+      <div class="sidebar-section">
+        <div class="sec-title">Font Family</div>
+        <div class="ctrl-row">
+          <div class="ctrl-item">
+            <span class="ctrl-label">Body Font</span>
+            <select class="ctrl-select" id="bodyFont" onchange="applyStyle()">
+              <option value="Inter">Inter (Clean)</option>
+              <option value="Space Grotesk">Space Grotesk</option>
+              <option value="DM Sans">DM Sans</option>
+              <option value="Syne">Syne (Display)</option>
+              <option value="Georgia">Georgia (Serif)</option>
+              <option value="Fraunces">Fraunces</option>
+            </select>
+          </div>
+          <div class="ctrl-item">
+            <span class="ctrl-label">Heading Font</span>
+            <select class="ctrl-select" id="headingFont" onchange="applyStyle()">
+              <option value="Syne">Syne (Bold)</option>
+              <option value="Playfair Display">Playfair Display</option>
+              <option value="Fraunces">Fraunces</option>
+              <option value="Space Grotesk">Space Grotesk</option>
+              <option value="Inter">Inter</option>
+              <option value="Georgia">Georgia</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Font Size</div>
+        <div class="ctrl-item" style="margin-bottom:10px">
+          <span class="ctrl-label">Base Size (px)</span>
+          <div class="range-with-value">
+            <input type="range" min="13" max="20" value="16" id="fontSize" oninput="applyStyle()"/>
+            <span class="range-val" id="fontSizeVal">16px</span>
+          </div>
+        </div>
+        <div class="ctrl-item">
+          <span class="ctrl-label">Line Height</span>
+          <div class="range-with-value">
+            <input type="range" min="13" max="20" value="17" step="1" id="lineHeight" oninput="applyStyle()"/>
+            <span class="range-val" id="lineHeightVal">1.7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Photo Border</div>
+        <div class="ctrl-row">
+          <div class="ctrl-item">
+            <span class="ctrl-label">Border Style</span>
+            <select class="ctrl-select" id="photoBorder" onchange="applyStyle()">
+              <option value="none">None</option>
+              <option value="rounded">Rounded (12px)</option>
+              <option value="circle">Circle</option>
+              <option value="square">Square</option>
+              <option value="frame">Framed</option>
+            </select>
+          </div>
+          <div class="ctrl-item">
+            <span class="ctrl-label">Shadow</span>
+            <select class="ctrl-select" id="photoShadow" onchange="applyStyle()">
+              <option value="none">None</option>
+              <option value="soft">Soft</option>
+              <option value="strong">Strong</option>
+              <option value="glow">Glow</option>
+            </select>
+          </div>
+        </div>
+        <div class="ctrl-item" style="margin-top:8px">
+          <span class="ctrl-label">Border Width (px)</span>
+          <div class="range-with-value">
+            <input type="range" min="0" max="8" value="0" id="photoBorderWidth" oninput="applyStyle()"/>
+            <span class="range-val" id="photoBorderWidthVal">0px</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Card Style</div>
+        <div class="ctrl-row">
+          <div class="ctrl-item">
+            <span class="ctrl-label">Card Radius</span>
+            <div class="range-with-value">
+              <input type="range" min="0" max="24" value="10" id="cardRadius" oninput="applyStyle()"/>
+              <span class="range-val" id="cardRadiusVal">10px</span>
+            </div>
+          </div>
+          <div class="ctrl-item">
+            <span class="ctrl-label">Card Shadow</span>
+            <select class="ctrl-select" id="cardShadow" onchange="applyStyle()">
+              <option value="none">None</option>
+              <option value="soft">Soft</option>
+              <option value="lifted">Lifted</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Accent Colors</div>
+        <div class="color-row">
+          <div class="color-item">
+            <span class="ctrl-label">Primary Color</span>
+            <div class="color-picker-wrap">
+              <input type="color" id="colorPrimary" value="#e63946" onchange="applyStyle()"/>
+              <span id="colorPrimaryHex">#e63946</span>
+            </div>
+          </div>
+          <div class="color-item">
+            <span class="ctrl-label">Secondary Color</span>
+            <div class="color-picker-wrap">
+              <input type="color" id="colorSecondary" value="#0f3460" onchange="applyStyle()"/>
+              <span id="colorSecondaryHex">#0f3460</span>
+            </div>
+          </div>
+        </div>
+        <div class="color-row">
+          <div class="color-item">
+            <span class="ctrl-label">Background</span>
+            <div class="color-picker-wrap">
+              <input type="color" id="colorBg" value="#ffffff" onchange="applyStyle()"/>
+              <span id="colorBgHex">#ffffff</span>
+            </div>
+          </div>
+          <div class="color-item">
+            <span class="ctrl-label">Text Color</span>
+            <div class="color-picker-wrap">
+              <input type="color" id="colorText" value="#111111" onchange="applyStyle()"/>
+              <span id="colorTextHex">#111111</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Spacing</div>
+        <div class="ctrl-item">
+          <span class="ctrl-label">Section Padding</span>
+          <div class="range-with-value">
+            <input type="range" min="24" max="100" value="56" id="sectionPad" oninput="applyStyle()"/>
+            <span class="range-val" id="sectionPadVal">56px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: CONTENT -->
+    <div class="tab-panel" id="tab-content">
+      <div class="sidebar-section">
+        <div class="sec-title">Details</div>
+        <div class="field"><label>Education</label><textarea id="education" placeholder="Degree, college, graduation year, courses..." oninput="sync()"></textarea></div>
+        <div class="field"><label>Experience</label><textarea id="experience" placeholder="Internships, freelance, leadership roles..." oninput="sync()"></textarea></div>
+        <div class="field"><label>Achievements</label><textarea id="achievement" placeholder="Awards, certifications, hackathons..." oninput="sync()"></textarea></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Skills</div>
+        <div class="field"><label>Skills (comma-separated)</label><textarea id="skills" placeholder="Design, Development, Research, ..." oninput="sync()"></textarea></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Services</div>
+        <div class="card-row">
+          <div class="field"><label>Service 1</label><input id="service1" placeholder="Strategy" oninput="sync()"/></div>
+          <div class="field"><label>Description</label><textarea id="service1Text" oninput="sync()"></textarea></div>
+        </div>
+        <div class="card-row">
+          <div class="field"><label>Service 2</label><input id="service2" placeholder="Design" oninput="sync()"/></div>
+          <div class="field"><label>Description</label><textarea id="service2Text" oninput="sync()"></textarea></div>
+        </div>
+        <div class="card-row">
+          <div class="field"><label>Service 3</label><input id="service3" placeholder="Development" oninput="sync()"/></div>
+          <div class="field"><label>Description</label><textarea id="service3Text" oninput="sync()"></textarea></div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sec-title">Projects</div>
+        <div class="card-row">
+          <div class="mini-grid">
+            <div class="field"><label>Project 1</label><input id="project1" placeholder="Project Name" oninput="sync()"/></div>
+            <div class="field"><label>Link</label><input id="project1Link" placeholder="https://..." oninput="sync()"/></div>
+          </div>
+          <div class="field"><label>Description</label><textarea id="project1Text" oninput="sync()"></textarea></div>
+        </div>
+        <div class="card-row">
+          <div class="mini-grid">
+            <div class="field"><label>Project 2</label><input id="project2" placeholder="Project Name" oninput="sync()"/></div>
+            <div class="field"><label>Link</label><input id="project2Link" placeholder="https://..." oninput="sync()"/></div>
+          </div>
+          <div class="field"><label>Description</label><textarea id="project2Text" oninput="sync()"></textarea></div>
+        </div>
+        <div class="card-row">
+          <div class="mini-grid">
+            <div class="field"><label>Project 3</label><input id="project3" placeholder="Project Name" oninput="sync()"/></div>
+            <div class="field"><label>Link</label><input id="project3Link" placeholder="https://..." oninput="sync()"/></div>
+          </div>
+          <div class="field"><label>Description</label><textarea id="project3Text" oninput="sync()"></textarea></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- PREVIEW -->
+  <div class="preview-area">
+    <div class="preview-bar">
+      <div class="preview-bar-left">
+        <span class="preview-label">Live Preview</span>
+        <span class="active-theme-badge" id="activeTheme">Glow</span>
+      </div>
+      <span style="font-size:.72rem;color:var(--muted)">Changes update instantly</span>
+    </div>
+    <div class="preview-frame" id="preview"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STATE ──────────────────────────────────────
+const userName = {{ user.name|tojson }};
+const userEmail = {{ user.email|tojson }};
+
+const fields = [
+  'name','role','headline','bio','email','phone','location','linkedin','github','website','skills',
+  'nav1Label','nav1Url','nav2Label','nav2Url','nav3Label','nav3Url',
+  'education','experience','achievement',
+  'service1','service1Text','service2','service2Text','service3','service3Text',
+  'project1','project1Text','project1Link',
+  'project2','project2Text','project2Link',
+  'project3','project3Text','project3Link'
+];
+
+let state = {
+  theme:'glow',
+  name: userName || 'Your Name',
+  role: 'Product Designer',
+  headline: 'I design clean digital products that connect people with useful experiences.',
+  bio: 'Write a concise story about your background, strengths, and the kind of opportunities you\'re looking for.',
+  email: userEmail || '',
+  phone: '',
+  location: 'India',
+  linkedin:'', github:'', website:'',
+  nav1Label:'', nav1Url:'', nav2Label:'', nav2Url:'', nav3Label:'', nav3Url:'',
+  education: 'Degree, college, expected graduation, relevant coursework.',
+  experience: 'Internships, freelance work, research, or leadership experience.',
+  achievement: 'Awards, certifications, hackathons, publications, or measurable wins.',
+  skills: 'Product Design, Web Development, UI/UX, Research, Communication',
+  service1:'Strategy', service1Text:'Clarify goals, users, and the right path from idea to launch.',
+  service2:'Design', service2Text:'Shape polished interfaces with strong flows, hierarchy, and usability.',
+  service3:'Development', service3Text:'Build responsive portfolio, landing, and project pages.',
+  project1:'App Dashboard', project1Text:'A focused dashboard for tracking work and insights.', project1Link:'',
+  project2:'Portfolio Site', project2Text:'A personal website with strong storytelling and case studies.', project2Link:'',
+  project3:'Student Tool', project3Text:'A student-facing product built around a clear daily workflow.', project3Link:'',
+  photo:'', photoName:'', resume:'', resumeName:''
+};
+
+let styleState = {
+  bodyFont:'Inter',
+  headingFont:'Syne',
+  fontSize:16,
+  lineHeight:17,
+  photoBorder:'none',
+  photoShadow:'none',
+  photoBorderWidth:0,
+  cardRadius:10,
+  cardShadow:'none',
+  colorPrimary:'#e63946',
+  colorSecondary:'#0f3460',
+  colorBg:'#ffffff',
+  colorText:'#111111',
+  sectionPad:56
+};
+
+// ─── UTILITIES ──────────────────────────────────
+function esc(v){ return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function link(v){ const r=String(v||'').trim(); if(!r)return'#'; if(/^[#/]/.test(r))return r; if(/^(https?:|mailto:|tel:)/i.test(r))return r; if(r.includes('@'))return'mailto:'+r; return'https://'+r; }
+function list(v){ return String(v||'').split(/[\n,]+/).map(s=>s.trim()).filter(Boolean); }
+function initials(n){ return String(n||'YN').split(/\s+/).slice(0,2).map(s=>s[0]||'').join('').toUpperCase()||'YN'; }
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2400); }
+function setStatus(msg){ document.getElementById('status').textContent=msg; }
+function themeLabel(t){ return({glow:'Glow',mono:'Mono',classic:'Classic',purple:'Purple',bold:'Bold'})[t]||'Glow'; }
+
+// ─── TABS ────────────────────────────────────────
+function showTab(name, el) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+// ─── FORM HYDRATION ──────────────────────────────
+function hydrateForm(){
+  fields.forEach(id=>{ const el=document.getElementById(id); if(el)el.value=state[id]||''; });
+  document.getElementById('photoName').textContent=state.photoName||'No photo';
+  document.getElementById('resumeName').textContent=state.resumeName||'No file';
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active', b.dataset.theme===state.theme));
+  document.getElementById('activeTheme').textContent=themeLabel(state.theme);
+  hydrateStyleControls();
+}
+
+function hydrateStyleControls(){
+  document.getElementById('bodyFont').value = styleState.bodyFont;
+  document.getElementById('headingFont').value = styleState.headingFont;
+  document.getElementById('fontSize').value = styleState.fontSize;
+  document.getElementById('fontSizeVal').textContent = styleState.fontSize+'px';
+  document.getElementById('lineHeight').value = styleState.lineHeight;
+  document.getElementById('lineHeightVal').textContent = (styleState.lineHeight/10).toFixed(1);
+  document.getElementById('photoBorder').value = styleState.photoBorder;
+  document.getElementById('photoShadow').value = styleState.photoShadow;
+  document.getElementById('photoBorderWidth').value = styleState.photoBorderWidth;
+  document.getElementById('photoBorderWidthVal').textContent = styleState.photoBorderWidth+'px';
+  document.getElementById('cardRadius').value = styleState.cardRadius;
+  document.getElementById('cardRadiusVal').textContent = styleState.cardRadius+'px';
+  document.getElementById('cardShadow').value = styleState.cardShadow;
+  document.getElementById('colorPrimary').value = styleState.colorPrimary;
+  document.getElementById('colorPrimaryHex').textContent = styleState.colorPrimary;
+  document.getElementById('colorSecondary').value = styleState.colorSecondary;
+  document.getElementById('colorSecondaryHex').textContent = styleState.colorSecondary;
+  document.getElementById('colorBg').value = styleState.colorBg;
+  document.getElementById('colorBgHex').textContent = styleState.colorBg;
+  document.getElementById('colorText').value = styleState.colorText;
+  document.getElementById('colorTextHex').textContent = styleState.colorText;
+  document.getElementById('sectionPad').value = styleState.sectionPad;
+  document.getElementById('sectionPadVal').textContent = styleState.sectionPad+'px';
+}
+
+// ─── SYNC FORM → STATE ───────────────────────────
+function sync(){
+  fields.forEach(id=>{ const el=document.getElementById(id); if(el)state[id]=el.value; });
+  renderPreview();
+}
+
+// ─── APPLY STYLE CONTROLS ────────────────────────
+function applyStyle(){
+  styleState.bodyFont = document.getElementById('bodyFont').value;
+  styleState.headingFont = document.getElementById('headingFont').value;
+  styleState.fontSize = parseInt(document.getElementById('fontSize').value);
+  styleState.lineHeight = parseInt(document.getElementById('lineHeight').value);
+  styleState.photoBorder = document.getElementById('photoBorder').value;
+  styleState.photoShadow = document.getElementById('photoShadow').value;
+  styleState.photoBorderWidth = parseInt(document.getElementById('photoBorderWidth').value);
+  styleState.cardRadius = parseInt(document.getElementById('cardRadius').value);
+  styleState.cardShadow = document.getElementById('cardShadow').value;
+  styleState.colorPrimary = document.getElementById('colorPrimary').value;
+  styleState.colorSecondary = document.getElementById('colorSecondary').value;
+  styleState.colorBg = document.getElementById('colorBg').value;
+  styleState.colorText = document.getElementById('colorText').value;
+  styleState.sectionPad = parseInt(document.getElementById('sectionPad').value);
+
+  // Update hex labels
+  document.getElementById('fontSizeVal').textContent = styleState.fontSize+'px';
+  document.getElementById('lineHeightVal').textContent = (styleState.lineHeight/10).toFixed(1);
+  document.getElementById('photoBorderWidthVal').textContent = styleState.photoBorderWidth+'px';
+  document.getElementById('cardRadiusVal').textContent = styleState.cardRadius+'px';
+  document.getElementById('sectionPadVal').textContent = styleState.sectionPad+'px';
+  document.getElementById('colorPrimaryHex').textContent = styleState.colorPrimary;
+  document.getElementById('colorSecondaryHex').textContent = styleState.colorSecondary;
+  document.getElementById('colorBgHex').textContent = styleState.colorBg;
+  document.getElementById('colorTextHex').textContent = styleState.colorText;
+
+  renderPreview();
+}
+
+// ─── THEME SWITCHING ─────────────────────────────
+document.getElementById('themeGrid').addEventListener('click', e=>{
+  const btn = e.target.closest('.theme-btn');
+  if(!btn) return;
+  state.theme = btn.dataset.theme;
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active', b.dataset.theme===state.theme));
+  document.getElementById('activeTheme').textContent = themeLabel(state.theme);
+  renderPreview();
+});
+
+// ─── FILE UPLOAD ─────────────────────────────────
+function readUpload(event, key, labelId, maxMb){
+  const file = event.target.files[0];
+  if(!file)return;
+  if(file.size > maxMb*1024*1024){ event.target.value=''; toast(`Keep ${file.name} under ${maxMb}MB`); return; }
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    state[key]=reader.result;
+    state[key+'Name']=file.name;
+    document.getElementById(labelId).textContent=file.name;
+    renderPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ─── BUILD HELPERS ───────────────────────────────
+function photoStyles(){
+  const border = styleState.photoBorder;
+  const bw = styleState.photoBorderWidth;
+  const shadow = styleState.photoShadow;
+  let radius = 'border-radius:8px';
+  if(border==='none') radius='border-radius:0';
+  else if(border==='rounded') radius='border-radius:12px';
+  else if(border==='circle') radius='border-radius:50%;aspect-ratio:1/1';
+  else if(border==='square') radius='border-radius:0';
+  else if(border==='frame') radius='border-radius:4px';
+
+  let bStyle = '';
+  if(bw>0) bStyle = `border:${bw}px solid ${styleState.colorPrimary}`;
+
+  let sh = '';
+  if(shadow==='soft') sh='box-shadow:0 8px 30px rgba(0,0,0,.15)';
+  else if(shadow==='strong') sh='box-shadow:0 20px 60px rgba(0,0,0,.3)';
+  else if(shadow==='glow') sh=`box-shadow:0 0 60px ${styleState.colorPrimary}88`;
+
+  return [radius, bStyle, sh].filter(Boolean).join(';');
+}
+
+function cardStyles(){
+  const r = styleState.cardRadius;
+  let sh = '';
+  if(styleState.cardShadow==='soft') sh='box-shadow:0 4px 20px rgba(0,0,0,.08)';
+  else if(styleState.cardShadow==='lifted') sh='box-shadow:0 12px 40px rgba(0,0,0,.14)';
+  return `border-radius:${r}px;${sh}`;
+}
+
+function photoMarkup(){
+  const ps = photoStyles();
+  if(state.photo) return `<img class="pf-photo" src="${state.photo}" alt="${esc(state.name)} portrait" style="${ps}"/>`;
+  return `<div class="pf-photo-fallback" style="${ps};background:${styleState.colorSecondary}20;color:${styleState.colorSecondary}">${esc(initials(state.name))}</div>`;
+}
+
+function resumeBtn(){
+  if(!state.resume) return '';
+  return `<a class="pf-btn" href="${state.resume}" download="${esc(state.resumeName||'resume')}" style="background:${styleState.colorSecondary};color:#fff;border-color:${styleState.colorSecondary}">Download CV</a>`;
+}
+
+function titleMarkup(){
+  const n = esc(state.name), r = esc(state.role);
+  const t = state.theme;
+  if(t==='glow') return `Hi, I'm ${n}<span><em>${r}</em></span>`;
+  if(t==='mono') return `Hello, I'm <strong>${n}</strong><span>${r}</span>`;
+  if(t==='classic') return `I'm ${r}<span>${n}</span>`;
+  if(t==='purple') return `I create <mark>${r}</mark><span>for tomorrow</span>`;
+  if(t==='bold') return `<span>${r}</span>`;
+  return `${n}<span>${r}</span>`;
+}
+
+function buildPortfolio(){
+  const skills = list(state.skills);
+  const svcs = [1,2,3].map(i=>({t:state['service'+i],d:state['service'+i+'Text']})).filter(s=>s.t||s.d);
+  const prjs = [1,2,3].map(i=>({t:state['project'+i],d:state['project'+i+'Text'],u:state['project'+i+'Link']})).filter(p=>p.t||p.d);
+  const details = [['Education',state.education],['Experience',state.experience],['Achievements',state.achievement]].filter(([,t])=>t);
+  const extra = [1,2,3].map(i=>({l:state['nav'+i+'Label'],u:state['nav'+i+'Url']})).filter(n=>n.l&&n.u);
+
+  const cs = cardStyles();
+  const svcCards = svcs.map(s=>`<article class="pf-card" style="${cs}"><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p></article>`).join('');
+  const prjCards = prjs.map(p=>`<article class="pf-card" style="${cs}"><h3>${esc(p.t)}</h3><p>${esc(p.d)}</p>${p.u?`<p><a href="${esc(link(p.u))}" target="_blank" rel="noreferrer">View →</a></p>`:''}</article>`).join('');
+  const detCards = details.map(([l,t])=>`<article class="pf-card" style="${cs}"><h3>${esc(l)}</h3><p>${esc(t)}</p></article>`).join('');
+  const skillTags = skills.map(s=>`<span class="pf-skill" style="border-color:${styleState.colorPrimary}30;color:${styleState.colorText}">${esc(s)}</span>`).join('');
+  const socials = [['LinkedIn',state.linkedin],['GitHub',state.github],['Website',state.website]].filter(([,u])=>u).map(([l,u])=>`<a href="${esc(link(u))}" target="_blank" rel="noreferrer">${esc(l)} ↗</a>`).join('');
+  const extraNav = extra.map(n=>`<a href="${esc(link(n.u))}" target="_blank" rel="noreferrer">${esc(n.l)}</a>`).join('');
+  const contact = [
+    state.email?`<a class="pf-contact-line" href="${esc(link(state.email))}" style="color:${styleState.colorText}">${esc(state.email)}</a>`:'',
+    state.phone?`<a class="pf-contact-line" href="tel:${esc(state.phone)}" style="color:${styleState.colorText}">${esc(state.phone)}</a>`:'',
+    state.location?`<span class="pf-contact-line" style="color:${styleState.colorText}">${esc(state.location)}</span>`:''
+  ].join('');
+
+  const stripItems = skills.slice(0,6).map(esc).join('<span class="pf-strip-sep"> / </span>') || esc(state.role);
+
+  const fontStyle = `font-family:'${styleState.bodyFont}',system-ui,sans-serif;font-size:${styleState.fontSize}px;line-height:${(styleState.lineHeight/10).toFixed(1)};color:${styleState.colorText};background:${styleState.colorBg}`;
+  const secPad = `padding:${styleState.sectionPad}px 0`;
+
+  return `<div class="pf-site theme-${esc(state.theme)}" style="${fontStyle}">
+  <div class="pf-wrap">
+    <nav class="pf-nav">
+      <div class="pf-logo" style="font-family:'${styleState.headingFont}',serif">${esc(state.name)}</div>
+      <div class="pf-links">
+        <a href="#work">Work</a>
+        ${details.length?'<a href="#details">Details</a>':''}
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+        ${extraNav}
+      </div>
+    </nav>
+    <section class="pf-hero">
+      <div>
+        <div class="pf-kicker" style="color:${styleState.colorPrimary}">${esc(state.role)}</div>
+        <h1 class="pf-title" style="font-family:'${styleState.headingFont}',serif">${titleMarkup()}</h1>
+        <p class="pf-copy">${esc(state.headline)}</p>
+        <p class="pf-copy">${esc(state.bio)}</p>
+        <div class="pf-actions">
+          <a class="pf-btn" href="#contact" style="background:${styleState.colorPrimary};color:#fff;border-color:${styleState.colorPrimary}">Get in Touch</a>
+          ${resumeBtn()}
+        </div>
+      </div>
+      <div class="pf-visual">${photoMarkup()}</div>
+    </section>
+  </div>
+  <div class="pf-strip" style="font-family:'DM Mono',monospace;color:${styleState.colorText}">${stripItems}</div>
+  <div class="pf-wrap">
+    ${svcs.length?`<section class="pf-section" style="${secPad}">
+      <div class="pf-section-head"><h2 style="font-family:'${styleState.headingFont}',serif">What I Do</h2></div>
+      <div class="pf-grid">${svcCards}</div>
+    </section>`:''}
+    ${prjs.length?`<section class="pf-section" id="work" style="${secPad}">
+      <div class="pf-section-head"><h2 style="font-family:'${styleState.headingFont}',serif">Selected Work</h2></div>
+      <div class="pf-grid">${prjCards}</div>
+    </section>`:''}
+    ${details.length?`<section class="pf-section" id="details" style="${secPad}">
+      <div class="pf-section-head"><h2 style="font-family:'${styleState.headingFont}',serif">Details</h2></div>
+      <div class="pf-grid">${detCards}</div>
+    </section>`:''}
+    ${skillTags?`<section class="pf-section" id="skills" style="${secPad}">
+      <div class="pf-section-head"><h2 style="font-family:'${styleState.headingFont}',serif">Skills</h2></div>
+      <div class="pf-skills">${skillTags}</div>
+    </section>`:''}
+    <section class="pf-section" id="contact" style="${secPad}">
+      <div class="pf-contact-grid">
+        <div>
+          <h2 class="pf-section" style="font-family:'${styleState.headingFont}',serif;border:none;padding:0 0 16px">Contact</h2>
+          ${contact}
+        </div>
+        <div class="pf-social">${socials}</div>
+      </div>
+    </section>
+    <footer class="pf-footer">Built with Student Sarthi</footer>
+  </div>
+</div>`;
+}
+
+function renderPreview(){
+  document.getElementById('preview').innerHTML = buildPortfolio();
+}
+
+// ─── FULL HTML EXPORT ────────────────────────────
+function fullHtml(){
+  const fontFamilies = ['Inter','Syne','DM Mono','Playfair Display','Space Grotesk','Fraunces'];
+  const fontsUrl = `https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,wght@0,700;1,700&display=swap`;
+  const css = Array.from(document.styleSheets).map(ss=>{
+    try{ return Array.from(ss.cssRules).map(r=>r.cssText).filter(r=>r.includes('.pf-')||r.includes('.theme-')).join('\n'); }catch(_){ return ''; }
+  }).join('\n');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${esc(state.name)} — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="${fontsUrl}" rel="stylesheet"/>
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}
+${css}
+</style>
+</head>
+<body>${buildPortfolio()}</body>
+</html>`;
+}
+
+// ─── SAVE / LOAD ─────────────────────────────────
+async function saveDraft(){
+  sync();
+  setStatus('Saving…');
+  try{
+    const res = await fetch('/api/portfolio',{
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({theme:state.theme, portfolio:Object.assign({}, state, {_style:styleState})})
+    });
+    const d = await res.json();
+    if(!d.success) throw new Error(d.error||'Save failed');
+    setStatus('Saved ✓');
+    toast('Portfolio saved');
+  }catch(err){ setStatus('Save failed'); toast(err.message||'Save failed'); }
+}
+
+async function loadDraft(){
+  setStatus('Loading…');
+  try{
+    const res = await fetch('/api/portfolio',{credentials:'include'});
+    const d = await res.json();
+    if(d.success && d.portfolio && d.portfolio.data){
+      const saved = d.portfolio.data;
+      if(saved._style) Object.assign(styleState, saved._style);
+      state = Object.assign({}, state, saved, {theme:d.portfolio.theme||saved.theme||state.theme});
+      hydrateForm();
+      renderPreview();
+      setStatus('Loaded ✓');
+      toast('Draft loaded');
+    }else{ setStatus('No saved draft'); toast('No saved draft yet'); }
+  }catch(err){ setStatus('Could not load'); toast('Could not load draft'); }
+}
+
+function downloadSite(){
+  sync();
+  const blob = new Blob([fullHtml()],{type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (state.name||'portfolio').trim().replace(/\s+/g,'_').toLowerCase()+'_portfolio.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function openSite(){
+  sync();
+  const blob = new Blob([fullHtml()],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  window.open(url,'_blank','noopener');
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+// ─── INIT ─────────────────────────────────────────
+hydrateForm();
+renderPreview();
+loadDraft();
+</script>
+</body>
+</html>
