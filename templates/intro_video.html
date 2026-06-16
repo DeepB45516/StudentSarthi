@@ -1,0 +1,136 @@
+<style>
+  .site-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at top, rgba(255, 92, 0, 0.12), transparent 36%), #050507;
+    transition: opacity 0.45s ease, visibility 0.45s ease;
+    overflow: hidden;
+  }
+
+  .site-intro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.24;
+    pointer-events: none;
+  }
+
+  .site-intro.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .site-intro__shell {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background: #000;
+    overflow: hidden;
+  }
+
+  .site-intro__video {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    display: block;
+    object-fit: cover;
+    object-position: center center;
+    background: #000;
+  }
+
+  .site-intro__skip {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(10, 10, 15, 0.45);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font: 600 0.78rem/1 'DM Sans', sans-serif;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+  }
+
+  .site-intro__skip:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  @media (max-width: 768px) {
+    .site-intro__skip {
+      right: 14px;
+      bottom: 14px;
+      padding: 9px 12px;
+      font-size: 0.72rem;
+    }
+  }
+</style>
+
+<div id="site-intro" class="site-intro" aria-hidden="true">
+  <div class="site-intro__shell">
+    <video class="site-intro__video" autoplay muted playsinline preload="auto" aria-label="Student Sarthi intro video"></video>
+    <button class="site-intro__skip" type="button" data-skip-intro>Skip intro</button>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const intro = document.getElementById('site-intro');
+    if (!intro) {
+      return;
+    }
+
+    const storageKey = 'student-sarthi-intro-played';
+    const finishIntro = () => {
+      if (intro.classList.contains('is-hidden')) {
+        return;
+      }
+      intro.classList.add('is-hidden');
+      window.setTimeout(() => intro.remove(), 450);
+    };
+
+    if (window.sessionStorage.getItem(storageKey) === '1') {
+      intro.remove();
+      return;
+    }
+
+    window.sessionStorage.setItem(storageKey, '1');
+
+    const video = intro.querySelector('video');
+    const skipButton = intro.querySelector('[data-skip-intro]');
+    const desktopSource = "{{ url_for('asset_file', filename='pc-intro.mp4') }}";
+    const mobileSource = "{{ url_for('asset_file', filename='mobile-intro.mp4') }}";
+    const sourceToUse = window.matchMedia('(max-width: 768px)').matches ? mobileSource : desktopSource;
+
+    const timeoutId = window.setTimeout(finishIntro, 12000);
+
+    if (video) {
+      video.src = sourceToUse;
+      video.load();
+      video.addEventListener('ended', finishIntro, { once: true });
+      video.addEventListener('error', finishIntro, { once: true });
+      video.play().catch(() => {});
+    }
+
+    if (skipButton) {
+      skipButton.addEventListener('click', finishIntro);
+    }
+
+    intro.addEventListener('click', (event) => {
+      if (event.target === intro) {
+        finishIntro();
+      }
+    });
+
+    window.addEventListener('pagehide', () => window.clearTimeout(timeoutId), { once: true });
+  })();
+</script>

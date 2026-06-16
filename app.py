@@ -21,7 +21,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 from urllib.parse import urlencode
 from flask import (Flask, render_template, request, jsonify,
-                   send_file, session, redirect, url_for)
+                   send_file, send_from_directory, session, redirect, url_for)
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -364,6 +364,11 @@ def root():
     if "user" in session:
         return redirect(url_for("dashboard"))
     return redirect(url_for("login_page"))
+
+
+@app.route("/assets/<path:filename>")
+def asset_file(filename):
+    return send_from_directory(os.path.join(BASE_DIR, "assets"), filename)
 
 @app.route("/login")
 def login_page():
