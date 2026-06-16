@@ -521,7 +521,11 @@ def google_callback():
         if not user:
             return redirect(url_for("login_page", auth_error="Could not create your Google account."))
         _set_session_user(user)
-        return redirect(url_for("dashboard"))
+        # Generate a short-lived token for mobile app
+        mobile_token = secrets.token_urlsafe(32)
+        session["mobile_token"] = mobile_token
+        session["mobile_token_expiry"] = (datetime.utcnow() + timedelta(minutes=5)).isoformat()
+        return redirect(url_for("dashboard") + f"?mobile_token={mobile_token}")
     except Exception as exc:
         return redirect(url_for("login_page", auth_error=f"Google sign-in failed: {exc}"))
 
@@ -1251,7 +1255,31 @@ def health():
         "database_error": None if db_ready else _db_error,
         "timestamp": datetime.now().isoformat()
     })
-
+@app.route("/api/auth/verify-mobile-token")
+def verify_mobile_token():
+    token = request.args.get("token")
+    expiry = session.get("mobile_token_expiry")
+    
+    if not token:
+        return jsonify({"success": False, "error": "No token"})
+    
+    if token != session.get("mobile_token"):
+        return jsonify({"success": False, "error": "Invalid token"})
+    
+    # Check expiry
+    if expiry:
+        from datetime import datetime
+        if datetime.utcnow() > datetime.fromisoformat(expiry):
+            return jsonify({"success": False, "error": "Token expired"})
+    
+    # Clear the token after use
+    session.pop("mobile_token", None)
+    session.pop("mobile_token_expiry", None)
+    
+    if "user" not in session:
+        return jsonify({"success": False, "error": "Not logged in"})
+    
+    return jsonify({"success": True, "user": session["user"]})
 
 if __name__ == "__main__":
     if not GROQ_KEYS:
