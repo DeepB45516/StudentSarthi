@@ -1280,6 +1280,13 @@ def verify_mobile_token():
         return jsonify({"success": False, "error": "Not logged in"})
     
     return jsonify({"success": True, "user": session["user"]})
+@app.route("/.well-known/assetlinks.json")
+def asset_links():
+    return send_from_directory(
+        os.path.join(BASE_DIR, 'web', '.well-known'),
+        'assetlinks.json',
+        mimetype='application/json'
+    )
 
 if __name__ == "__main__":
     if not GROQ_KEYS:
